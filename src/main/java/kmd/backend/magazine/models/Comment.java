@@ -16,16 +16,17 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Comments extends BaseEntity{
+public class Comment extends BaseEntity{
 
     @Column(name = "comment", length = 50, nullable = false)
     private String comment;
-
+    @Column(columnDefinition = "tinyint(1) default 0")
+    private boolean deleteStatus;
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private Users users;
+    private User users;
 
     @ManyToOne
     @JoinColumn(name = "article_id")
-    private Articles articles;
+    private Article articles;
 }

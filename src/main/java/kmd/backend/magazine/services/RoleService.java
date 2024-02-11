@@ -2,9 +2,9 @@ package kmd.backend.magazine.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import kmd.backend.magazine.repos.RolesRepo;
+import kmd.backend.magazine.repos.RoleRepo;
 
-public class RolesService {
+public class RoleService {
     @Autowired
-    private RolesRepo rolesRepo;
+    private RoleRepo rolesRepo;
 }

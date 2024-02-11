@@ -4,6 +4,6 @@ import javax.xml.stream.events.Comment;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CommentsRepo extends JpaRepository<Comment, Integer> {
+public interface CommentRepo extends JpaRepository<Comment, Integer> {
     
 }
