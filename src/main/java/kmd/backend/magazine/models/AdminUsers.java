@@ -17,7 +17,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Admin_Users extends BaseEntity {
+public class AdminUsers extends BaseEntity {
 
     @Column(name = "name", length = 50, nullable = false)
     private String name;
