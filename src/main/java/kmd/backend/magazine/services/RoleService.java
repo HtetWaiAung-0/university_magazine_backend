@@ -23,4 +23,9 @@ public class RoleService {
         }
         return rolesRepo.save(role);
     }
+
+    public void deleteRole(int roleId) {
+        rolesRepo.deleteById(roleId);
+    }
+
 }
