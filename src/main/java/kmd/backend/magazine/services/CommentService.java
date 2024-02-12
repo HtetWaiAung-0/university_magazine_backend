@@ -8,5 +8,5 @@ import kmd.backend.magazine.repos.CommentRepo;
 @Service
 public class CommentService {
     @Autowired
-    private CommentRepo commentsRepo;
+    private CommentRepo commentRepo;
 }

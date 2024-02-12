@@ -32,13 +32,15 @@ public class Article extends BaseEntity {
     @Column(name = "delete_status", columnDefinition = "tinyint(1) default 0")
     private boolean deleteStatus;
 
-    @Column(name = "created_date", columnDefinition = "timestamp default current_timestamp")
+    @Column(name = "created_date")
     private String createdDate;
 
-    @Column(name = "updated_date", columnDefinition = "timestamp default current_timestamp on update current_timestamp")
+    @Column(name = "updated_date")
     private String updatedDate;
 
-
+    @ManyToOne
+    @JoinColumn(name = "academic_year_id")
+    private AcademicYear academicYear;
     
     @ManyToOne()
     @JoinColumn(name = "user_id")

@@ -1,8 +1,10 @@
 package kmd.backend.magazine.repos;
 
-import javax.xml.stream.events.Comment;
+
 
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import kmd.backend.magazine.models.Comment;
 
 public interface CommentRepo extends JpaRepository<Comment, Integer> {
     
