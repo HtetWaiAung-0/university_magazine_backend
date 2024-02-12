@@ -14,7 +14,9 @@ public class ArticleService {
     @Autowired
     private ArticleRepo articlesRepo;
 
-    
+    public Article getArticle(int articleId) {
+        return articlesRepo.findById(articleId).orElse(null);
+    }
     public Article uploadArticle(Article article) {
         if(article == null){
             throw new IllegalArgumentException("Article is null");
@@ -24,5 +26,9 @@ public class ArticleService {
 
     public List<Article> getAllArticles() {
         return articlesRepo.findAll();
+    }
+
+    public String deleteArticle(int articleId){
+        return "";
     }
 }

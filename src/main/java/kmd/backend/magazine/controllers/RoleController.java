@@ -2,7 +2,11 @@ package kmd.backend.magazine.controllers;
 
 import java.util.List;
 
+
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import kmd.backend.magazine.exceptions.EntityAlreadyExistException;
+import kmd.backend.magazine.exceptions.EntityNotFoundException;
 import kmd.backend.magazine.models.Role;
 import kmd.backend.magazine.services.RoleService;
 
@@ -27,14 +33,24 @@ public class RoleController {
     }
 
     @PostMapping("/add")
-    public Role addRole(@RequestBody Role role){
+    public ResponseEntity<String> addRole(@RequestBody Role role){
         //System.out.println("Role: " + role.toString());
-        return roleService.saveRole(role);
+        try{
+            roleService.saveRole(role);
+            return ResponseEntity.ok().body("Role added");
+        }catch(EntityAlreadyExistException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{roleId}")
-    public void deleteRole(@PathVariable int roleId){
-        roleService.deleteRole(roleId);
+    public ResponseEntity<String> deleteRole(@PathVariable int roleId){
+        try{
+            roleService.deleteRole(roleId);
+            return ResponseEntity.ok().body("Role deleted");
+        }catch(EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
 }
