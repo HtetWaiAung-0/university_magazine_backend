@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import kmd.backend.magazine.dtos.UserDto;
 import kmd.backend.magazine.exceptions.EntityAlreadyExistException;
 import kmd.backend.magazine.exceptions.EntityNotFoundException;
 import kmd.backend.magazine.models.User;
@@ -30,9 +31,9 @@ public class UserController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addUser(@RequestBody User user) {
+    public ResponseEntity<String> addUser(@RequestBody UserDto userDto) {
         try {
-            userService.saveUser(user);
+            userService.saveUser(userDto);
             return ResponseEntity.ok().body("User added");
         } catch (EntityAlreadyExistException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());

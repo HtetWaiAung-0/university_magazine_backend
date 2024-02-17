@@ -1,9 +1,5 @@
 package kmd.backend.magazine.controllers;
-<<<<<<< HEAD
 import java.util.List;
-=======
-
->>>>>>> refs/remotes/origin/main
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
