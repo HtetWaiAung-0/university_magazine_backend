@@ -1,14 +1,8 @@
 package kmd.backend.magazine.services;
-
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-
-import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import ch.qos.logback.core.spi.ErrorCodes;
 import kmd.backend.magazine.exceptions.EntityAlreadyExistException;
 import kmd.backend.magazine.exceptions.EntityNotFoundException;
 import kmd.backend.magazine.models.Role;

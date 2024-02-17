@@ -1,14 +1,9 @@
 package kmd.backend.magazine.services;
-
 import java.util.List;
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import kmd.backend.magazine.exceptions.EntityAlreadyExistException;
 import kmd.backend.magazine.exceptions.EntityNotFoundException;
-
 import kmd.backend.magazine.models.User;
 import kmd.backend.magazine.repos.UserRepo;
 
