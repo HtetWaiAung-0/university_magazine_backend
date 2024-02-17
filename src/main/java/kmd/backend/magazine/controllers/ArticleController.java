@@ -2,6 +2,7 @@ package kmd.backend.magazine.controllers;
 
 import java.util.List;
 
+import org.aspectj.apache.bcel.generic.RET;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import kmd.backend.magazine.exceptions.EntityAlreadyExistException;
+import kmd.backend.magazine.exceptions.EntityNotFoundException;
 import kmd.backend.magazine.models.Article;
 import kmd.backend.magazine.services.ArticleService;
 
@@ -23,27 +26,35 @@ public class ArticleController {
     private ArticleService articleService;
 
     @GetMapping()
-    public List<Article> getAllArticles() {
-        return articleService.getAllArticles();
+    public ResponseEntity<Object> getAllArticles() {
+        return ResponseEntity.ok().body(articleService.getAllArticles());
     }
 
     @GetMapping("/{articleId}")
-    public ResponseEntity<Article> getArticle(@PathVariable int articleId) {
-        Article articel = articleService.getArticle(articleId);
-        if(articel == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(articel);
+    public ResponseEntity<Object> getArticle(@PathVariable int articleId) {
+        
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(articleService.getArticle(articleId));
+        }catch(EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }   
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<Article> uploadArticle(@RequestBody Article article) {
-        return ResponseEntity.status(HttpStatus.OK).body(articleService.uploadArticle(article));
+    public ResponseEntity<Object> uploadArticle(@RequestBody Article article) {
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(articleService.uploadArticle(article));
+        }catch(EntityAlreadyExistException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{articleId}")
-    public ResponseEntity<String> deleteArticle(@PathVariable int articleId) {
-        return ResponseEntity.status(HttpStatus.OK).body(articleService.deleteArticle(articleId));
-        
+    public ResponseEntity<Object> deleteArticle(@PathVariable int articleId) {
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(articleService.deleteArticle(articleId));
+        }catch(EntityAlreadyExistException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }

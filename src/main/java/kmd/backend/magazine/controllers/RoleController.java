@@ -1,12 +1,7 @@
 package kmd.backend.magazine.controllers;
 
-import java.util.List;
-
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,12 +24,12 @@ public class RoleController {
     private RoleService roleService;
 
     @GetMapping()
-    public ResponseEntity<List<Role>> getAllRoles() {
+    public ResponseEntity<Object> getAllRoles() {
         return ResponseEntity.ok().body(roleService.getAllRoles());
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addRole(@RequestBody Role role){
+    public ResponseEntity<Object> addRole(@RequestBody Role role){
         try{
             roleService.saveRole(role);
             return ResponseEntity.ok().body("Role added.");
