@@ -15,7 +15,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Facultie extends BaseEntity {
+public class Faculty extends BaseEntity {
     @Column(name = "name", length = 50, nullable = false)
     private String name;
 
