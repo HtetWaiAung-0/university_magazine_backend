@@ -22,6 +22,9 @@ public class Comment extends BaseEntity{
     private String comment;
     @Column(columnDefinition = "tinyint(1) default 0")
     private boolean deleteStatus;
+    @Column(columnDefinition = "datetime default NOW()")
+    private String createdAt;
+    
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User users;

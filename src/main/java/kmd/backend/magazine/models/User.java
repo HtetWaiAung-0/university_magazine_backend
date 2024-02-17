@@ -31,5 +31,5 @@ public class User extends BaseEntity {
 
     @ManyToOne()
     @JoinColumn(name="faculity_id")
-    private Facultie faculties;
+    private Faculty faculties;
 }
