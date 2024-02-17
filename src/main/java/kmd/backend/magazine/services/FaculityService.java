@@ -3,10 +3,10 @@ package kmd.backend.magazine.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import kmd.backend.magazine.repos.Faculitie;
+import kmd.backend.magazine.repos.FaculityRepo;
 
 @Service
-public class FaculitieService {
+public class FaculityService {
     @Autowired
-    private Faculitie faculitiesRepo;
+    private FaculityRepo faculityRepo;
 }
