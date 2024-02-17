@@ -15,8 +15,9 @@ public class CommentService {
     @Autowired
     private ArticleService articleService;
 
-    public List<Comment> getComment(int articelId) {
-        return commentRepo.findByArticles(articelId);
+    public List<Comment> getComment(int articleId) {
+        Article article = articleService.getArticle(articleId);
+        return commentRepo.findByArticles(article);
     }
 
     public Comment addComment(Comment comment) {
