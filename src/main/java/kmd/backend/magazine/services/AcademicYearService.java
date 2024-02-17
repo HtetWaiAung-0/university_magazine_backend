@@ -15,8 +15,12 @@ public class AcademicYearService {
     @Autowired
     private AcademicYearRepo academicYearRepo;
 
-    public AcademicYear getAcademicYear(int id) {
-        return academicYearRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("AcademicYear ID : " + id));
+    public List<AcademicYear> getAllAcademicYears() {
+        return academicYearRepo.findAll();
+    }
+
+    public AcademicYear getAcademicYear(int academicYearId) {
+        return academicYearRepo.findById(academicYearId).orElseThrow(() -> new EntityNotFoundException("AcademicYear ID : " + academicYearId));
     }
 
     public AcademicYear saveAcademicYear(AcademicYear academicYear) {
