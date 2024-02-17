@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,19 +29,21 @@ public class RoleController {
     private RoleService roleService;
 
     @GetMapping()
-    public List<Role> getAllRoles() {
-        return roleService.getAllRoles();
+    public ResponseEntity<List<Role>> getAllRoles() {
+        return ResponseEntity.ok().body(roleService.getAllRoles());
     }
 
     @PostMapping("/add")
     public ResponseEntity<String> addRole(@RequestBody Role role){
-        //System.out.println("Role: " + role.toString());
         try{
             roleService.saveRole(role);
-            return ResponseEntity.ok().body("Role added");
-        }catch(EntityAlreadyExistException e){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+            return ResponseEntity.ok().body("Role added.");
         }
+        catch(EntityAlreadyExistException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }/* catch(Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } */
     }
 
     @DeleteMapping("/{roleId}")
