@@ -5,3 +5,4 @@ public class EntityAlreadyExistException extends RuntimeException {
         super(e+" is already exist!");
     }
 }
+

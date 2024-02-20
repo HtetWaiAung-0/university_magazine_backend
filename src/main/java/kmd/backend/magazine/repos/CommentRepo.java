@@ -6,5 +6,5 @@ import kmd.backend.magazine.models.Comment;
 import java.util.List;
 
 public interface CommentRepo extends JpaRepository<Comment, Integer> {
-    List<Comment> findByArticles(Article article);
+    List<Comment> findByArticle(Article article);
 }

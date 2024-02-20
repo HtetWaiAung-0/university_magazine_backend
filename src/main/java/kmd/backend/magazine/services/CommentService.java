@@ -17,13 +17,13 @@ public class CommentService {
 
     public List<Comment> getComment(int articleId) {
         Article article = articleService.getArticle(articleId);
-        return commentRepo.findByArticles(article);
+        return commentRepo.findByArticle(article);
     }
 
     public Comment addComment(Comment comment) {
-        Article article = articleService.getArticle(comment.getArticles().getId());
+        Article article = articleService.getArticle(comment.getArticle().getId());
         if(article == null) {
-            throw new EntityNotFoundException("Aticle");
+            throw new EntityNotFoundException("Article");
         }
         return commentRepo.save(comment);
     }

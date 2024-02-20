@@ -2,13 +2,10 @@ package kmd.backend.magazine.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import kmd.backend.magazine.exceptions.EntityAlreadyExistException;
-import kmd.backend.magazine.exceptions.EntityNotFoundException;
+
 import kmd.backend.magazine.models.Faculty;
-import kmd.backend.magazine.services.FaculityService;
-import java.util.List;
+import kmd.backend.magazine.services.FacultyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,31 +19,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class FacultyController {
 
     @Autowired
-    private FaculityService faculityService;
+    private FacultyService facultyService;
 
     @GetMapping
-    public List<Faculty> getAllFaculties() {
-        return faculityService.getAllgetFaculties();
+    public ResponseEntity<?> getAllFaculties() {
+        return ResponseEntity.ok().body(facultyService.getAllgetFaculties());
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addFaculty(@RequestBody Faculty faculty) {
-        try {
-            faculityService.saveFaculty(faculty);
-            return ResponseEntity.ok().body("Faculty added");
-        } catch (EntityAlreadyExistException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
+    public ResponseEntity<?> addFaculty(@RequestBody Faculty faculty) {
+        return ResponseEntity.ok().body(facultyService.saveFaculty(faculty));
     }
 
     @DeleteMapping("/{facultyId}")
-    public ResponseEntity<String> deleteUser(@PathVariable int facultyId) {
-        try {
-            faculityService.deleteFacultyById(facultyId);
-            return ResponseEntity.ok().body("Faculty deleted");
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    public ResponseEntity<?> deleteUser(@PathVariable int facultyId) {
+        facultyService.deleteFacultyById(facultyId);
+        return ResponseEntity.ok().body("Faculty deleted");
     }
 
 }

@@ -25,11 +25,10 @@ public class User extends BaseEntity {
     @Column(columnDefinition = "tinyint(1) default 0")
     private boolean deleteStatus;
 
-    @ManyToOne()
-    @JoinColumn(name="role_id")
-    private Role roles;
+    @Column(name = "role", length = 50, nullable = false)
+    private String role;
 
     @ManyToOne()
-    @JoinColumn(name="faculity_id")
-    private Faculty faculties;
+    @JoinColumn(name="faculty_id")
+    private Faculty faculty;
 }

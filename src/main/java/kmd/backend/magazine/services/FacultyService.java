@@ -5,21 +5,21 @@ import org.springframework.stereotype.Service;
 import kmd.backend.magazine.exceptions.EntityAlreadyExistException;
 import kmd.backend.magazine.exceptions.EntityNotFoundException;
 import kmd.backend.magazine.models.Faculty;
-import kmd.backend.magazine.repos.FaculityRepo;
+import kmd.backend.magazine.repos.FacultyRepo;
 
 @Service
-public class FaculityService {
+public class FacultyService {
     @Autowired
-    private FaculityRepo faculityRepo;
+    private FacultyRepo facultyRepo;
 
     public List<Faculty> getAllgetFaculties() {
-        return faculityRepo.findAll();
+        return facultyRepo.findAll();
     }
 
     public Faculty saveFaculty(Faculty faculty) {
-        List<Faculty> existingFaculty = faculityRepo.findByName(faculty.getName());
+        List<Faculty> existingFaculty = facultyRepo.findByName(faculty.getName());
         if (existingFaculty.isEmpty()) {
-            return faculityRepo.save(faculty);
+            return facultyRepo.save(faculty);
 
         } else {
             throw new EntityAlreadyExistException(faculty.getName()+" Faculty exit ");
@@ -28,9 +28,9 @@ public class FaculityService {
 
     public void deleteFacultyById(int facultyId) {
 
-        Faculty faculty = faculityRepo.findById(facultyId).get();
+        Faculty faculty = facultyRepo.findById(facultyId).get();
         if (faculty==null) {
-            faculityRepo.deleteById(facultyId);
+            facultyRepo.deleteById(facultyId);
         } else {
             throw new EntityNotFoundException("Faculty not found");
         }

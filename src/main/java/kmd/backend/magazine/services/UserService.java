@@ -8,10 +8,9 @@ import kmd.backend.magazine.dtos.UserDto;
 import kmd.backend.magazine.exceptions.EntityAlreadyExistException;
 import kmd.backend.magazine.exceptions.EntityNotFoundException;
 import kmd.backend.magazine.models.Faculty;
-import kmd.backend.magazine.models.Role;
 import kmd.backend.magazine.models.User;
-import kmd.backend.magazine.repos.FaculityRepo;
-import kmd.backend.magazine.repos.RoleRepo;
+import kmd.backend.magazine.repos.FacultyRepo;
+
 import kmd.backend.magazine.repos.UserRepo;
 
 @Service
@@ -20,10 +19,7 @@ public class UserService {
     private UserRepo usersRepo;
 
     @Autowired
-    private RoleRepo roleRepo;
-
-    @Autowired
-    private FaculityRepo faculityRepo;
+    private FacultyRepo faculityRepo;
 
     public List<User> getAllUsers() {
         return usersRepo.findAll();
@@ -33,20 +29,14 @@ public class UserService {
         return usersRepo.findById(userId).get();
     }
 
-    public User saveUser(UserDto userDto) {
-        Role role = roleRepo.findById(userDto.getRoleId()).get();
-        Faculty faculty = faculityRepo.findById(userDto.getFacultyId()).get();
-        User user = new User();
-        user.setName(userDto.getName());
-        user.setRoles(role);
-        user.setFaculties(faculty);
-         List<User> existingUsers = usersRepo.findByName(userDto.getName());
-         if (existingUsers.isEmpty()) {
-             return usersRepo.save(user);
+    public User saveUser(User user) {
+        List<User> existingUsers = usersRepo.findByName(user.getName());
+        if (existingUsers.isEmpty()) {
+            return usersRepo.save(user);
 
-         } else {
-             throw new EntityAlreadyExistException("User Added");
-         }
+        } else {
+            throw new EntityAlreadyExistException("User Added");
+        }
     }
 
     public void deleteUserById(int userId) {
