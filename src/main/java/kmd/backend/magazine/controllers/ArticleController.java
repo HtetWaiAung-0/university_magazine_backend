@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kmd.backend.magazine.models.Article;
 import kmd.backend.magazine.services.ArticleService;
@@ -23,6 +24,8 @@ import kmd.backend.magazine.services.ArticleService;
 public class ArticleController {
     @Autowired
     private ArticleService articleService;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @GetMapping()
     public ResponseEntity<?> getAllArticles() {
@@ -34,15 +37,19 @@ public class ArticleController {
         return ResponseEntity.status(HttpStatus.OK).body(articleService.getArticle(articleId));
     }
 
-    @PostMapping("/upload")
+/*     @PostMapping("/upload")
     public ResponseEntity<?> uploadArticle(@RequestBody Article article) {
         return ResponseEntity.status(HttpStatus.OK).body(articleService.uploadArticle(article));
-    }
+    } */
 
-    @PostMapping("/uploadFile")
-    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) throws IOException {
-        articleService.fileLocalUpload(file);
-        return ResponseEntity.ok("File uploaded successfully: " + file.getOriginalFilename());
+    @PostMapping("/upload")
+    public ResponseEntity<?> handleFileUpload(@RequestParam("file") MultipartFile file,
+    @RequestParam("coverPhoto") MultipartFile coverPhoto,
+    @RequestParam("article") String articleObj
+    ) throws IOException {
+        Article article = objectMapper.readValue(articleObj, Article.class);
+        
+        return ResponseEntity.ok().body(articleService.uploadArticle(article,coverPhoto,file));
     }
 
     @DeleteMapping("/{articleId}")

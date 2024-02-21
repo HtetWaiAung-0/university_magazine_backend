@@ -27,7 +27,7 @@ public class Article extends BaseEntity {
     private String coverPhoto;
 
     @Column(name = "approve_status", columnDefinition = "tinyint(1) default 0")
-    private boolean approve;
+    private boolean approveStatus;
 
     @Column(name = "delete_status", columnDefinition = "tinyint(1) default 0")
     private boolean deleteStatus;
