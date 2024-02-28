@@ -1,6 +1,4 @@
 package kmd.backend.magazine.models;
-
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -10,7 +8,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 @Entity
 @Setter
 @Getter
@@ -28,7 +25,12 @@ public class User extends BaseEntity {
     @Column(name = "role", length = 50, nullable = false)
     private String role;
 
+    @Column(name = "profile_photo", length = 50, nullable = false)
+    private String profilePhoto; 
+
     @ManyToOne()
     @JoinColumn(name="faculty_id")
     private Faculty faculty;
+
+
 }

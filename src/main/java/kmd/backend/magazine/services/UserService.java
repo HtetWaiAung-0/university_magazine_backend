@@ -1,16 +1,14 @@
 package kmd.backend.magazine.services;
 
+import java.io.IOException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import kmd.backend.magazine.dtos.UserDto;
 import kmd.backend.magazine.exceptions.EntityAlreadyExistException;
 import kmd.backend.magazine.exceptions.EntityNotFoundException;
-import kmd.backend.magazine.models.Faculty;
 import kmd.backend.magazine.models.User;
-import kmd.backend.magazine.repos.FacultyRepo;
-
 import kmd.backend.magazine.repos.UserRepo;
 
 @Service
@@ -19,7 +17,7 @@ public class UserService {
     private UserRepo usersRepo;
 
     @Autowired
-    private FacultyRepo faculityRepo;
+    CommonService commonService;
 
     public List<User> getAllUsers() {
         return usersRepo.findAll();
@@ -29,11 +27,15 @@ public class UserService {
         return usersRepo.findById(userId).get();
     }
 
-    public User saveUser(User user) {
+    public User savedUser(User user, MultipartFile profilePhoto) throws IOException {
         List<User> existingUsers = usersRepo.findByName(user.getName());
         if (existingUsers.isEmpty()) {
-            return usersRepo.save(user);
-
+            user.setProfilePhoto(profilePhoto.getOriginalFilename());
+            User savedUser = usersRepo.save(user);
+            if (profilePhoto != null) {
+                commonService.fileLocalUpload(profilePhoto, "profilePhoto", savedUser.getId());
+            }
+            return savedUser;
         } else {
             throw new EntityAlreadyExistException("User Added");
         }
@@ -49,5 +51,12 @@ public class UserService {
         }
 
     }
+
+    // public User uploadProfilePhoto(User user, MultipartFile profilePhoto)throws
+    // IOException{
+    // if (user)
+    // user.setProfilePhoto(profilePhoto.getOriginalFilename());
+    // commonService.fileLocalUpload(profilePhoto, "profilePhoto",user.getId());
+    // }
 
 }
