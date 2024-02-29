@@ -23,7 +23,7 @@ public class User extends BaseEntity {
     private String name;
 
     @Column(columnDefinition = "smallint")
-    private boolean deleteStatus;
+    private int deleteStatus;
 
     @Column(name = "role", length = 50, nullable = false)
     private String role;

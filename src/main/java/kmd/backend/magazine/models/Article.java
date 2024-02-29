@@ -32,7 +32,7 @@ public class Article extends BaseEntity {
     private boolean approveStatus;
 
     @Column(name = "delete_status", columnDefinition = "smallint")
-    private boolean deleteStatus;
+    private int deleteStatus;
 
     @Column(name = "created_date")
     private String createdDate;

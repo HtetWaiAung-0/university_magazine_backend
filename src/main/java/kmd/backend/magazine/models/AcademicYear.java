@@ -20,7 +20,7 @@ public class AcademicYear extends BaseEntity {
     private String name;
 
     @Column(name = "delet_status", columnDefinition = "smallint")
-    private boolean deleteStatus;
+    private int deleteStatus;
 
     @Column(name = "start_date", nullable = false)
     private String startDate;

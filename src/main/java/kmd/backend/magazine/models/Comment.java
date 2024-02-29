@@ -23,7 +23,7 @@ public class Comment extends BaseEntity{
     @Column(name = "comment", length = 50, nullable = false)
     private String comment;
     @Column(columnDefinition = "smallint")
-    private boolean deleteStatus;
+    private int deleteStatus;
     @Column(name = "created_at")
     private String createdAt;
     

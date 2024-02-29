@@ -22,5 +22,5 @@ public class Faculty extends BaseEntity {
     private String name;
 
     @Column(columnDefinition = "smallint")
-    private boolean deleteStatus;
+    private int deleteStatus;
 }
