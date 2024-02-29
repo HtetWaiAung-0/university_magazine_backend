@@ -9,7 +9,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import jakarta.persistence.Table;
 
+@Table(name = "comment") 
 @Getter
 @Setter
 @Entity
@@ -20,9 +22,9 @@ public class Comment extends BaseEntity{
 
     @Column(name = "comment", length = 50, nullable = false)
     private String comment;
-    @Column(columnDefinition = "tinyint(1) default 0")
+    @Column(columnDefinition = "smallint")
     private boolean deleteStatus;
-    @Column(columnDefinition = "datetime default NOW()")
+    @Column(name = "created_at")
     private String createdAt;
     
     @ManyToOne

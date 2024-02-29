@@ -9,7 +9,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import jakarta.persistence.Table;
 
+@Table(name = "article") 
 @Entity
 @Setter
 @Getter
@@ -26,10 +28,10 @@ public class Article extends BaseEntity {
     @Column(name = "cover_photo", length = 50, nullable = false)
     private String coverPhoto;
 
-    @Column(name = "approve_status", columnDefinition = "tinyint(1) default 0")
+    @Column(name = "approve_status", columnDefinition = "smallint")
     private boolean approveStatus;
 
-    @Column(name = "delete_status", columnDefinition = "tinyint(1) default 0")
+    @Column(name = "delete_status", columnDefinition = "smallint")
     private boolean deleteStatus;
 
     @Column(name = "created_date")

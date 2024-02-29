@@ -8,6 +8,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import jakarta.persistence.Table;
+
+@Table(name = "users") 
 @Entity
 @Setter
 @Getter
@@ -19,7 +22,7 @@ public class User extends BaseEntity {
     @Column(name = "name", length = 50, nullable = false)
     private String name;
 
-    @Column(columnDefinition = "tinyint(1) default 0")
+    @Column(columnDefinition = "smallint")
     private boolean deleteStatus;
 
     @Column(name = "role", length = 50, nullable = false)
