@@ -3,6 +3,6 @@ COPY . .
 RUN mvn clean package -DskipTests
 
 FROM openjdk:17.0.1-jdk-slim
-COPY --from=build /target/university_magazine_backend-0.0.1-SNAPSHOT.jar university_magazine_backend.jar
+COPY --from=build /target/magazine-0.0.1-SNAPSHOT.jar magazine.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","university_magazine_backend.jar"]
+ENTRYPOINT ["java","-jar","magazine.jar"]
