@@ -19,16 +19,16 @@ import jakarta.persistence.Table;
 @AllArgsConstructor
 public class User extends BaseEntity {
 
-    @Column(name = "name", length = 50, nullable = false)
+    @Column(name = "name", length = 255, nullable = false)
     private String name;
 
-    @Column(columnDefinition = "smallint")
-    private int deleteStatus;
+    @Column(name = "delete_status", columnDefinition = "BOOLEAN DEFAULT false")
+    private boolean deleteStatus;
 
     @Column(name = "role", length = 50, nullable = false)
     private String role;
 
-    @Column(name = "profile_photo", length = 50, nullable = false)
+    @Column(name = "profile_photo", length = 255)
     private String profilePhoto; 
 
     @ManyToOne()

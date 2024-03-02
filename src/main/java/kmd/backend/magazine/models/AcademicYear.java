@@ -16,11 +16,11 @@ import jakarta.persistence.Table;
 @AllArgsConstructor
 public class AcademicYear extends BaseEntity {
 
-    @Column(name = "name", length = 50, nullable = false)
+    @Column(name = "name", length = 255, nullable = false)
     private String name;
 
-    @Column(name = "delet_status", columnDefinition = "smallint")
-    private int deleteStatus;
+    @Column(name = "delete_status", columnDefinition = "BOOLEAN DEFAULT false")
+    private boolean deleteStatus;
 
     @Column(name = "start_date", nullable = false)
     private String startDate;

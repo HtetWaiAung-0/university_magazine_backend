@@ -19,20 +19,20 @@ import jakarta.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Article extends BaseEntity {
-    @Column(name = "title", length = 50, nullable = false)
+    @Column(name = "title", length = 255, nullable = false)
     private String title;
 
-    @Column(name = "file_name", length = 50, nullable = false)
+    @Column(name = "file_name", length = 255)
     private String fileName;
 
-    @Column(name = "cover_photo", length = 50, nullable = false)
+    @Column(name = "cover_photo", length = 255)
     private String coverPhoto;
 
-    @Column(name = "approve_status", columnDefinition = "smallint")
+    @Column(name = "approve_status")
     private boolean approveStatus;
 
-    @Column(name = "delete_status", columnDefinition = "smallint")
-    private int deleteStatus;
+    @Column(name = "delete_status", columnDefinition = "BOOLEAN DEFAULT false")
+    private boolean deleteStatus;
 
     @Column(name = "created_date")
     private String createdDate;

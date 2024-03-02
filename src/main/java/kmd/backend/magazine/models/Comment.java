@@ -20,10 +20,12 @@ import jakarta.persistence.Table;
 @AllArgsConstructor
 public class Comment extends BaseEntity{
 
-    @Column(name = "comment", length = 50, nullable = false)
+    @Column(name = "comment", length = 255, nullable = false)
     private String comment;
-    @Column(columnDefinition = "smallint")
-    private int deleteStatus;
+
+    @Column(name = "delete_status", columnDefinition = "BOOLEAN DEFAULT false")
+    private boolean deleteStatus;
+
     @Column(name = "created_at")
     private String createdAt;
     
