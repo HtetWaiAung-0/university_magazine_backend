@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.util.StringUtils;
 
+import kmd.backend.magazine.dtos.UserDto;
 import kmd.backend.magazine.exceptions.EntityAlreadyExistException;
 import kmd.backend.magazine.exceptions.EntityNotFoundException;
 import kmd.backend.magazine.models.User;
@@ -28,20 +29,6 @@ public class UserService {
         return usersRepo.findById(userId).get();
     }
 
-    // public User savedUser(User user, MultipartFile profilePhoto) throws IOException {
-    //     List<User> existingUsers = usersRepo.findByName(user.getName());
-    //     if (existingUsers.isEmpty()) {
-    //         user.setProfilePhotoName(profilePhoto.getOriginalFilename());
-    //         User savedUser = usersRepo.save(user);
-    //         if (profilePhoto != null) {
-    //             commonService.fileLocalUpload(profilePhoto, "profilePhoto", savedUser.getId());
-    //         }
-    //         return savedUser;
-    //     } else {
-    //         throw new EntityAlreadyExistException("User Added");
-    //     }
-    // }
-
     public void deleteUserById(int userId) {
 
         User user = usersRepo.findById(userId).get();
@@ -53,13 +40,23 @@ public class UserService {
 
     }
 
-    public User saveUser(MultipartFile file, User user) throws Exception {
+    public void deleteUserPhoto(int userId){
+        User user = usersRepo.findById(userId).get();
+        if (user == null) {
+            throw new EntityNotFoundException("User");
+        }
+            user.setProfilePhotoData(null);
+            user.setProfilePhotoName(null);
+            user.setProfilePhotoType(null);
+            usersRepo.save(user);
+    }
 
-        List<User> existingUsers = usersRepo.findByName(user.getName());
-        if (existingUsers.isEmpty()) {
+    public User updateUser(MultipartFile file, User updateUser, int userId) throws Exception {
+       User user = getUserRaw(userId);
+        if(user != null) {
             String fileName = StringUtils.cleanPath(file.getOriginalFilename());
             try {
-                if(!file.isEmpty()) {
+                if (!file.isEmpty()) {
                     if (fileName.contains("..")) {
                         throw new Exception("Filename contains invalid path sequence "
                                 + fileName);
@@ -69,7 +66,34 @@ public class UserService {
                     user.setProfilePhotoName(fileName);
                     user.setProfilePhotoType(file.getContentType());
                 }
+                    user.setName(updateUser.getName());
+                    user.setRole(updateUser.getRole());
 
+                user.setFaculty(updateUser.getFaculty());
+                return usersRepo.save(user);
+            } catch (Exception e) {
+                throw new Exception(e.getMessage());
+            }
+        }else{
+            throw new EntityNotFoundException("Update User Not Found!");
+        }
+    }
+
+    public User saveUser(MultipartFile file, User user) throws Exception {
+        List<User> existingUsers = usersRepo.findByName(user.getName());
+        if (existingUsers.isEmpty()) {
+            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            try {
+                if (!file.isEmpty()) {
+                    if (fileName.contains("..")) {
+                        throw new Exception("Filename contains invalid path sequence "
+                                + fileName);
+                    }
+                    System.out.println(file.getBytes());
+                    user.setProfilePhotoData(file.getBytes());
+                    user.setProfilePhotoName(fileName);
+                    user.setProfilePhotoType(file.getContentType());
+                }
                 return usersRepo.save(user);
             } catch (Exception e) {
                 throw new Exception("Could not save File: " + fileName);
@@ -77,20 +101,24 @@ public class UserService {
         } else {
             throw new EntityAlreadyExistException("User is already added");
         }
-
     }
 
-    public User getUser(int userId) throws Exception {
+    public UserDto getUser(int userId) {
+        User user = new User();
+        try {
+            user = usersRepo.findById(userId).get();
+        } catch (Exception e) {
+            throw new EntityNotFoundException("User not found!");
+        }
+        String downloadURL = commonService.fileDownloadURL("api/v1/user/profilePhoto", user.getProfilePhotoData(),
+                user.getProfilePhotoName(), user.getId());
+        return new UserDto(user.getId(), user.getName(), user.getRole(), downloadURL, user.isDeleteStatus(),
+                user.getFaculty());
+    }
+
+    public User getUserRaw(int userId) {
         return usersRepo.findById(userId)
-                .orElseThrow(
-                        () -> new Exception("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException("User not found!"));
     }
-
-    // public User uploadProfilePhoto(User user, MultipartFile profilePhoto)throws
-    // IOException{
-    // if (user)
-    // user.setProfilePhoto(profilePhoto.getOriginalFilename());
-    // commonService.fileLocalUpload(profilePhoto, "profilePhoto",user.getId());
-    // }
 
 }

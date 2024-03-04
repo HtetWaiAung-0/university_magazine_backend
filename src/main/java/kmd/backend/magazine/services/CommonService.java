@@ -7,8 +7,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import kmd.backend.magazine.dtos.UserDto;
+import kmd.backend.magazine.models.User;
 
 @Service
 public class CommonService {
@@ -26,5 +33,20 @@ public class CommonService {
             System.out.println(filePath.toFile().getAbsolutePath());
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
         }
+    }
+
+    
+
+    public String fileDownloadURL(String baseMapping,byte[] fileData,String fileName,int id) {
+        if (fileData != null && fileData.length > 0
+                && fileName != null) {
+                    String downloadURL = ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path(baseMapping+"/download/")
+                    .path(String.valueOf(id))
+                    .toUriString();
+                    return downloadURL;
+        }
+        return "";
+        
     }
 }

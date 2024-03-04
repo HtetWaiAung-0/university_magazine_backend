@@ -44,59 +44,41 @@ public class UserController {
         return ResponseEntity.ok().body("User deleted");
     }
 
-    // @PostMapping("/add")
-    // public ResponseEntity<?> profilePhotoUpload(@RequestParam("user")String userStr, @RequestParam("profilePhoto")MultipartFile profilePhoto)throws IOException{
-    //      User user = objectMapper.readValue(userStr, User.class);
-    //      userService.savedUser(user,profilePhoto);
-    //      return ResponseEntity.ok().body("User Added!!"); 
-    // }
-
     @PostMapping("/add")
-    public ResponseEntity<?> addUser(@RequestParam("profilePhoto")MultipartFile profilePhoto,@RequestParam("user")String userStr) throws Exception {
-        //Attachment attachment = null;
+    public ResponseEntity<?> addUser(@RequestParam("profilePhoto") MultipartFile profilePhoto,
+            @RequestParam("user") String userStr) throws Exception {
         User user = objectMapper.readValue(userStr, User.class);
-        userService.saveUser(profilePhoto,user);
-        // downloadURl = ServletUriComponentsBuilder.fromCurrentContextPath()
-        //         .path("/download/")
-        //         .path(attachment.getId())
-        //         .toUriString();
-
-        return ResponseEntity.ok().body("User Added!"); 
+        userService.saveUser(profilePhoto, user);
+        return ResponseEntity.ok().body("User Added!");
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUser(@PathVariable int userId) throws Exception {
-        User user = userService.getUser(userId);
-        String downloadURl = "";
-        if(user.getProfilePhotoData()!= null || user.getProfilePhotoData().length > 0 || user.getProfilePhotoName()!= null){
-             downloadURl = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/api/v1/user/download/")
-                .path(String.valueOf(user.getId()))
-                .toUriString();
-        }
-        
-
-        UserDto userDto = new UserDto(user.getId(),user.getName(),user.getRole(),downloadURl,user.isDeleteStatus(),user.getFaculty());
-        // return  ResponseEntity.ok()
-        //         .contentType(MediaType.parseMediaType(user.getProfilePhotoType()))
-        //         .header(HttpHeaders.CONTENT_DISPOSITION,
-        //                 "attachment; filename=\"" + user.getProfilePhotoName()
-        //         + "\"")
-        //         .body(new ByteArrayResource(user.getProfilePhotoData()));
-
-
-        return ResponseEntity.ok().body(userDto);
+        return ResponseEntity.ok().body(userService.getUser(userId));
     }
 
+    @PostMapping("/update/{userId}")
+    public ResponseEntity<?> updateUser(@RequestParam("profilePhoto") MultipartFile profilePhoto,
+    @RequestParam("user") String userUpdateStr,@PathVariable int userId) throws Exception {
+        User updateUser = objectMapper.readValue(userUpdateStr, User.class);
+        userService.updateUser(profilePhoto, updateUser,userId);
+        return ResponseEntity.ok().body("User Updated!");
+    }
 
-    @GetMapping("/download/{userId}")
+    @DeleteMapping("/delete/profilePhoto/{userId}")
+    public ResponseEntity<?> deleteUserPhoto(@PathVariable int userId) throws Exception {
+        userService.deleteUserPhoto(userId);
+        return ResponseEntity.ok().body("User photo deleted");
+    }
+
+    @GetMapping("/profilePhoto/download/{userId}")
     public ResponseEntity<Resource> downloadFile(@PathVariable int userId) throws Exception {
-        User user = userService.getUser(userId);
-        return  ResponseEntity.ok()
+        User user = userService.getUserRaw(userId);
+        return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(user.getProfilePhotoType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                         "attachment; filename=\"" + user.getProfilePhotoName()
-                + "\"")
+                                + "\"")
                 .body(new ByteArrayResource(user.getProfilePhotoData()));
     }
 
