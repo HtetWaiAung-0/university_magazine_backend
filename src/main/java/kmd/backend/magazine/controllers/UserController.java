@@ -2,6 +2,8 @@ package kmd.backend.magazine.controllers;
 
 import java.io.IOException;
 import java.util.List;
+
+import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ByteArrayResource;
@@ -38,6 +40,26 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @GetMapping("/login")
+    public ResponseEntity<?> login(@RequestParam("username") String username, @RequestParam("password") String password)
+            throws AuthenticationException {
+        userService.authenticateUser(username, password);
+        return ResponseEntity.ok().body("Authention successful");
+    }
+
+    @PostMapping("/changepassword/{id}")
+    public ResponseEntity<?> changePassword(@PathVariable int id,
+            @RequestParam("password") String password, @RequestParam("newPassword") String newPassword)
+            throws Exception {
+        userService.changeUserPassword(password, newPassword, id);
+        return ResponseEntity.ok().body("Password changed");
+    }
+
+    @GetMapping("/check/{username}")
+    public ResponseEntity<?> checkUserName(@RequestParam("username") String username) {
+        return ResponseEntity.ok().body(userService.checkUserName(username));
+    }
+
     @DeleteMapping("/{userId}")
     public ResponseEntity<?> deleteUser(@PathVariable int userId) {
         userService.deleteUserById(userId);
@@ -59,9 +81,9 @@ public class UserController {
 
     @PostMapping("/update/{userId}")
     public ResponseEntity<?> updateUser(@RequestParam("profilePhoto") MultipartFile profilePhoto,
-    @RequestParam("user") String userUpdateStr,@PathVariable int userId) throws Exception {
+            @RequestParam("user") String userUpdateStr, @PathVariable int userId) throws Exception {
         User updateUser = objectMapper.readValue(userUpdateStr, User.class);
-        userService.updateUser(profilePhoto, updateUser,userId);
+        userService.updateUser(profilePhoto, updateUser, userId);
         return ResponseEntity.ok().body("User Updated!");
     }
 
