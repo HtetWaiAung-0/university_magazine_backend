@@ -1,8 +1,13 @@
 package kmd.backend.magazine.models;
 
+import java.sql.Types;
+
+import org.hibernate.annotations.JdbcTypeCode;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,10 +28,26 @@ public class Article extends BaseEntity {
     private String title;
 
     @Column(name = "file_name", length = 255)
-    private String fileName;
+    private String fileName; 
 
-    @Column(name = "cover_photo", length = 255)
-    private String coverPhoto;
+    @Column(name = "file_type", length = 255)
+    private String fileType;
+
+    @Lob
+    @JdbcTypeCode(Types.BINARY)
+    @Column(name = "file_data")
+    private byte[] fileData;
+
+    @Column(name = "cover_photo_name", length = 255)
+    private String coverPhotoName; 
+
+    @Column(name = "cover_photo_type", length = 255)
+    private String coverPhotoType;
+
+    @Lob
+    @JdbcTypeCode(Types.BINARY)
+    @Column(name = "cover_photo_data")
+    private byte[] coverPhotoData;
 
     @Column(name = "approve_status")
     private boolean approveStatus;

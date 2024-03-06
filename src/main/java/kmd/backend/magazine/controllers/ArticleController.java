@@ -1,9 +1,12 @@
 package kmd.backend.magazine.controllers;
-import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,24 +37,62 @@ public class ArticleController {
         return ResponseEntity.status(HttpStatus.OK).body(articleService.getArticle(articleId));
     }
 
-/*     @PostMapping("/upload")
-    public ResponseEntity<?> uploadArticle(@RequestBody Article article) {
-        return ResponseEntity.status(HttpStatus.OK).body(articleService.uploadArticle(article));
-    } */
-
-    @PostMapping("/upload")
-    public ResponseEntity<?> handleFileUpload(@RequestParam("file") MultipartFile file,
-    @RequestParam("coverPhoto") MultipartFile coverPhoto,
-    @RequestParam("article") String articleObj
-    ) throws IOException {
-        Article article = objectMapper.readValue(articleObj, Article.class);
-        
-        return ResponseEntity.ok().body(articleService.uploadArticle(article,coverPhoto,file));
+    @PostMapping("/add")
+    public ResponseEntity<?> addArticle(@RequestParam("file") MultipartFile file,
+            @RequestParam("coverPhoto") MultipartFile coverPhoto,
+            @RequestParam("article") String articleStr) throws Exception {
+        Article article = objectMapper.readValue(articleStr, Article.class);
+        articleService.saveArticle(file, coverPhoto, article);
+        return ResponseEntity.ok().body("Article added");
     }
 
-    @DeleteMapping("/{articleId}")
-    public ResponseEntity<?> deleteArticle(@PathVariable int articleId) {
-        return ResponseEntity.status(HttpStatus.OK).body(articleService.deleteArticle(articleId));
+    @PostMapping("/update/{articleId}")
+    public ResponseEntity<?> updateArticle(@RequestParam("file") MultipartFile file,
+            @RequestParam("coverPhoto") MultipartFile coverPhoto,
+            @RequestParam("article") String articleStr) throws Exception {
+        Article article = objectMapper.readValue(articleStr, Article.class);
+        articleService.updateArticle(file, coverPhoto, article);
+        return ResponseEntity.ok().body("Article updated");
+    }
+
+    @PostMapping("/approve/{articleId}")
+    public ResponseEntity<?> approveArticle(@PathVariable int articleId) throws Exception {
+        articleService.setApproveArticle(articleId, true);
+        return ResponseEntity.ok().body("Article approved");
+    }
+
+    @PostMapping("/reject/{articleId}")
+    public ResponseEntity<?> rejectArticle(@PathVariable int articleId) throws Exception {
+        articleService.setApproveArticle(articleId, false);
+        return ResponseEntity.ok().body("Article rejected");
+    }
+
+    // @DeleteMapping("/{articleId}")
+    // public ResponseEntity<?> deleteArticle(@PathVariable int articleId) {
+    // return
+    // ResponseEntity.status(HttpStatus.OK).body(articleService.deleteArticle(articleId));
+    // }
+
+    @GetMapping("/file/download/{articleId}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable int articleId) throws Exception {
+        Article article = articleService.getArticleRaw(articleId);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(article.getFileType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + article.getFileName()
+                                + "\"")
+                .body(new ByteArrayResource(article.getFileData()));
+    }
+
+    @GetMapping("/coverPhoto/download/{articleId}")
+    public ResponseEntity<Resource> downloadCoverPhoto(@PathVariable int articleId) throws Exception {
+        Article article = articleService.getArticleRaw(articleId);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(article.getCoverPhotoType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + article.getCoverPhotoName()
+                                + "\"")
+                .body(new ByteArrayResource(article.getCoverPhotoData()));
     }
 
 }

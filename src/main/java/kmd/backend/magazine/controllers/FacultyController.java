@@ -1,9 +1,10 @@
 package kmd.backend.magazine.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.multipart.MultipartFile;
 
 import kmd.backend.magazine.models.Faculty;
+import kmd.backend.magazine.models.User;
 import kmd.backend.magazine.services.FacultyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,13 +29,19 @@ public class FacultyController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addFaculty(@RequestBody Faculty faculty) {
-        return ResponseEntity.ok().body(facultyService.saveFaculty(faculty));
+        facultyService.saveFaculty(faculty);
+        return ResponseEntity.ok().body("Faculty Added");
     }
 
     @DeleteMapping("/{facultyId}")
-    public ResponseEntity<?> deleteUser(@PathVariable int facultyId) {
+    public ResponseEntity<?> deleteFaculty(@PathVariable int facultyId) {
         facultyService.deleteFacultyById(facultyId);
         return ResponseEntity.ok().body("Faculty deleted");
     }
 
+    @PostMapping("/update/{facultyId}")
+    public ResponseEntity<?> updateFaculty(@RequestBody Faculty faculty, @PathVariable int facultyId) throws Exception {
+        facultyService.updateFaculty(faculty, facultyId);
+        return ResponseEntity.ok().body("User Updated!");
+    }
 }

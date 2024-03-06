@@ -19,7 +19,7 @@ public class AcademicYearController {
     @Autowired
     private AcademicYearService academicYearService;
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<?> getAllAcademicYears() {
         return ResponseEntity.ok().body(academicYearService.getAllAcademicYears());
     }
@@ -31,6 +31,13 @@ public class AcademicYearController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addAcademicYear(@RequestBody AcademicYear academicYear) {
-        return ResponseEntity.ok().body(academicYearService.addAcademicYear(academicYear));
+        academicYearService.addAcademicYear(academicYear);
+        return ResponseEntity.ok().body("Academic Year added");
+    }
+
+    @PostMapping("/update/{academicYearId}")
+    public ResponseEntity<?> updateAcademicYear(@PathVariable int academicYearId, @RequestBody AcademicYear academicYear) {
+        academicYearService.updatAcademicYear(academicYearId, academicYear);
+        return ResponseEntity.ok().body("Academic Year updated");
     }
 }

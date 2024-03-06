@@ -16,7 +16,7 @@ import jakarta.persistence.Table;
 @AllArgsConstructor
 public class AcademicYear extends BaseEntity {
 
-    @Column(name = "name", length = 255, nullable = false)
+    @Column(name = "name", length = 255, nullable = false, unique = true)
     private String name;
 
     @Column(name = "delete_status", columnDefinition = "BOOLEAN DEFAULT false")

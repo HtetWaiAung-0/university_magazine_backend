@@ -36,4 +36,14 @@ public class FacultyService {
         }
 
     }
+
+
+    public Faculty updateFaculty(Faculty faculty, int facultyId) {
+        Faculty existingFaculty = facultyRepo.findById(facultyId).get();
+        if (existingFaculty == null) {
+            throw new EntityNotFoundException("Faculty not found");
+        }
+        existingFaculty.setName(faculty.getName());
+        return facultyRepo.save(existingFaculty);
+    }
 }
