@@ -79,7 +79,7 @@ public class ArticleService {
                     throw new Exception("Cover Photo Name contains invalid path sequence "
                             + coverPhotoName);
                 }
-                article.setCoverPhotoData(file.getBytes());
+                article.setCoverPhotoData(coverPhoto.getBytes());
                 article.setCoverPhotoName(coverPhotoName);
                 article.setCoverPhotoType(coverPhoto.getContentType());
             }
@@ -93,9 +93,9 @@ public class ArticleService {
         }
     }
 
-    public Article updateArticle(MultipartFile file, MultipartFile coverPhoto, Article article) throws Exception {
+    public Article updateArticle(MultipartFile file, MultipartFile coverPhoto, Article article,int articelId) throws Exception {
 
-        Article existingArticle = getArticleRaw(article.getId());
+        Article existingArticle = getArticleRaw(articelId);
 
         if (existingArticle != null) {
             String fileName = StringUtils.cleanPath(file.getOriginalFilename());
@@ -115,7 +115,7 @@ public class ArticleService {
                         throw new Exception("Cover Photo Name contains invalid path sequence "
                                 + coverPhotoName);
                     }
-                    existingArticle.setCoverPhotoData(file.getBytes());
+                    existingArticle.setCoverPhotoData(coverPhoto.getBytes());
                     existingArticle.setCoverPhotoName(coverPhotoName);
                     existingArticle.setCoverPhotoType(coverPhoto.getContentType());
                 }

@@ -49,9 +49,10 @@ public class ArticleController {
     @PostMapping("/update/{articleId}")
     public ResponseEntity<?> updateArticle(@RequestParam("file") MultipartFile file,
             @RequestParam("coverPhoto") MultipartFile coverPhoto,
-            @RequestParam("article") String articleStr) throws Exception {
+            @RequestParam("article") String articleStr,
+            @PathVariable int articleId) throws Exception {
         Article article = objectMapper.readValue(articleStr, Article.class);
-        articleService.updateArticle(file, coverPhoto, article);
+        articleService.updateArticle(file, coverPhoto, article,articleId);
         return ResponseEntity.ok().body("Article updated");
     }
 

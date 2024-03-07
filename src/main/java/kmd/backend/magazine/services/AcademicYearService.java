@@ -76,7 +76,6 @@ public class AcademicYearService {
             throw new EntityNotFoundException("AcademicYear ID : " + academicYearId);
         }
 
-        List<AcademicYear> existingAcademicYears = academicYearRepo.findByName(academicYear.getName());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         LocalDate startDate = LocalDate.parse(academicYear.getStartDate(), formatter);
         LocalDate lastSubmitDate = LocalDate.parse(academicYear.getLastSubmitDate(), formatter);
@@ -95,12 +94,9 @@ public class AcademicYearService {
         existingAcademicYear.setLastSubmitDate(academicYear.getLastSubmitDate());
         existingAcademicYear.setEndDate(academicYear.getEndDate());
 
-        if (existingAcademicYears.isEmpty()) {
+
             existingAcademicYear.setName(academicYear.getName());
             return academicYearRepo.save(existingAcademicYear);
-        } else {
-            throw new EntityAlreadyExistException(academicYear.getName() + " Academic Year");
-        }
     }
 }
 
