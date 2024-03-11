@@ -11,9 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.util.StringUtils;
 
-import kmd.backend.magazine.dtos.UserDto;
+import kmd.backend.magazine.dtos.UserRequestDto;
+import kmd.backend.magazine.dtos.UserResponseDto;
 import kmd.backend.magazine.exceptions.EntityAlreadyExistException;
 import kmd.backend.magazine.exceptions.EntityNotFoundException;
+import kmd.backend.magazine.models.Faculty;
 import kmd.backend.magazine.models.User;
 import kmd.backend.magazine.repos.UserRepo;
 
@@ -25,18 +27,22 @@ public class UserService {
     @Autowired
     CommonService commonService;
 
-    public List<UserDto> getAllUsers() {
-        List<UserDto> userDtos = new ArrayList<>();
+    @Autowired
+    private FacultyService facultyService;
+
+    public List<UserResponseDto> getAllUsers() {
+        List<UserResponseDto> userDtos = new ArrayList<>();
         for (User user : usersRepo.findAll()) {
             String downloadURL = commonService.fileDownloadURL("api/v1/user/profilePhoto", user.getProfilePhotoData(),
                     user.getProfilePhotoName(), user.getId());
-            userDtos.add(new UserDto(user.getId(), user.getName(), user.getRole(), downloadURL, user.isDeleteStatus(),
+            userDtos.add(new UserResponseDto(user.getId(), user.getName(), user.getRole(), downloadURL,
+                    user.isDeleteStatus(),
                     user.getFaculty()));
         }
         return userDtos;
     }
 
-    public UserDto getUser(int userId) {
+    public UserResponseDto getUser(int userId) {
         User user = new User();
         try {
             user = getUserRaw(userId);
@@ -45,10 +51,10 @@ public class UserService {
         }
         String downloadURL = commonService.fileDownloadURL("api/v1/user/profilePhoto", user.getProfilePhotoData(),
                 user.getProfilePhotoName(), user.getId());
-        return new UserDto(user.getId(), user.getName(), user.getRole(), downloadURL, user.isDeleteStatus(),
+        return new UserResponseDto(user.getId(), user.getName(), user.getRole(), downloadURL, user.isDeleteStatus(),
                 user.getFaculty());
     }
-    
+
     public void deleteUserById(int userId) {
 
         User user = getUserRaw(userId);
@@ -71,25 +77,27 @@ public class UserService {
         usersRepo.save(user);
     }
 
-    public User updateUser(MultipartFile file, User updateUser, int userId) throws Exception {
+    public User updateUser(UserRequestDto userRequestDto, int userId) throws Exception {
         User user = getUserRaw(userId);
         if (user != null) {
-            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            String fileName = StringUtils.cleanPath(userRequestDto.getProfilePhoto().getOriginalFilename());
             try {
-                if (!file.isEmpty()) {
+                if (!userRequestDto.getProfilePhoto().isEmpty()) {
                     if (fileName.contains("..")) {
                         throw new Exception("Filename contains invalid path sequence "
                                 + fileName);
                     }
-                    System.out.println(file.getBytes());
-                    user.setProfilePhotoData(file.getBytes());
+                    user.setProfilePhotoData(userRequestDto.getProfilePhoto().getBytes());
                     user.setProfilePhotoName(fileName);
-                    user.setProfilePhotoType(file.getContentType());
+                    user.setProfilePhotoType(userRequestDto.getProfilePhoto().getContentType());
                 }
-                user.setName(updateUser.getName());
-                user.setRole(updateUser.getRole());
-
-                user.setFaculty(updateUser.getFaculty());
+                user.setName(userRequestDto.getName());
+                user.setRole(userRequestDto.getRole());
+                if (userRequestDto.getFaculty() != 0) {
+                    user.setFaculty(facultyService.getFacultyById(userRequestDto.getFaculty()));
+                }else{
+                    user.setFaculty(null);
+                }
                 return usersRepo.save(user);
             } catch (Exception e) {
                 throw new Exception(e.getMessage());
@@ -99,22 +107,29 @@ public class UserService {
         }
     }
 
-    public User saveUser(MultipartFile file, User user) throws Exception {
-        List<User> existingUsers = usersRepo.findByName(user.getName());
+    public User saveUser(UserRequestDto userRequestDto) throws Exception {
+        User user = new User();
+        List<User> existingUsers = usersRepo.findByName(userRequestDto.getName());
         if (existingUsers.isEmpty()) {
-            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            String fileName = StringUtils.cleanPath(userRequestDto.getProfilePhoto().getOriginalFilename());
             try {
-                if (!file.isEmpty()) {
+                if (!userRequestDto.getProfilePhoto().isEmpty()) {
                     if (fileName.contains("..")) {
                         throw new Exception("Filename contains invalid path sequence "
                                 + fileName);
                     }
-                    user.setProfilePhotoData(file.getBytes());
+                    user.setProfilePhotoData(userRequestDto.getProfilePhoto().getBytes());
                     user.setProfilePhotoName(fileName);
-                    user.setProfilePhotoType(file.getContentType());
+                    user.setProfilePhotoType(userRequestDto.getProfilePhoto().getContentType());
                 }
+                user.setName(userRequestDto.getName());
+                user.setRole(userRequestDto.getRole());
+                if (userRequestDto.getFaculty() != 0) {
+                    user.setFaculty(facultyService.getFacultyById(userRequestDto.getFaculty()));
+                }
+
                 BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
-                user.setPassword(bcrypt.encode(user.getPassword()));
+                user.setPassword(bcrypt.encode(userRequestDto.getPassword()));
                 return usersRepo.save(user);
             } catch (Exception e) {
                 // throw new Exception("Could not save File: " + fileName);

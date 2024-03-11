@@ -23,4 +23,5 @@ public class Faculty extends BaseEntity {
 
     @Column(name = "delete_status", columnDefinition = "BOOLEAN DEFAULT false")
     private boolean deleteStatus;
+
 }

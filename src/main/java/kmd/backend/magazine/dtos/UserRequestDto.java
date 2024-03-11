@@ -1,6 +1,8 @@
 package kmd.backend.magazine.dtos;
 
-import kmd.backend.magazine.models.Faculty;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,11 +10,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
-    private int id;
+public class UserRequestDto {
     private String name;
+    private String password;
     private String role;
-    private String profilePhoto; 
+    private MultipartFile profilePhoto; 
     private boolean deleteStatus;
-    private Faculty faculty;
+    private int faculty;
 }

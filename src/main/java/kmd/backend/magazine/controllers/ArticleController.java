@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import kmd.backend.magazine.dtos.ArticelRequestDto;
 import kmd.backend.magazine.models.Article;
 import kmd.backend.magazine.services.ArticleService;
 
@@ -38,21 +40,15 @@ public class ArticleController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addArticle(@RequestParam("file") MultipartFile file,
-            @RequestParam("coverPhoto") MultipartFile coverPhoto,
-            @RequestParam("article") String articleStr) throws Exception {
-        Article article = objectMapper.readValue(articleStr, Article.class);
-        articleService.saveArticle(file, coverPhoto, article);
+    public ResponseEntity<?> addArticle(@ModelAttribute ArticelRequestDto articelRequestDto) throws Exception {
+        articleService.saveArticle(articelRequestDto);
         return ResponseEntity.ok().body("Article added");
     }
 
     @PostMapping("/update/{articleId}")
-    public ResponseEntity<?> updateArticle(@RequestParam("file") MultipartFile file,
-            @RequestParam("coverPhoto") MultipartFile coverPhoto,
-            @RequestParam("article") String articleStr,
+    public ResponseEntity<?> updateArticle(@ModelAttribute ArticelRequestDto articelRequestDto,
             @PathVariable int articleId) throws Exception {
-        Article article = objectMapper.readValue(articleStr, Article.class);
-        articleService.updateArticle(file, coverPhoto, article,articleId);
+        articleService.updateArticle(articelRequestDto,articleId);
         return ResponseEntity.ok().body("Article updated");
     }
 

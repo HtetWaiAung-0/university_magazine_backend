@@ -1,6 +1,5 @@
 package kmd.backend.magazine.services;
 
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -12,6 +11,7 @@ import kmd.backend.magazine.exceptions.EntityAlreadyExistException;
 import kmd.backend.magazine.exceptions.EntityNotFoundException;
 import kmd.backend.magazine.models.AcademicYear;
 import kmd.backend.magazine.repos.AcademicYearRepo;
+
 @Service
 public class AcademicYearService {
     @Autowired
@@ -45,8 +45,14 @@ public class AcademicYearService {
         }
     }
 
+    public void checkName(String name) {
+        List<AcademicYear> existingAcademicYear = academicYearRepo.findByName(name);
+        if (!existingAcademicYear.isEmpty()) {
+            throw new EntityAlreadyExistException(name + " Academic Year");
+        }
+    }
+
     public AcademicYear addAcademicYear(AcademicYear academicYear) {
-       List<AcademicYear> existingAcademicYear = academicYearRepo.findByName(academicYear.getName());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         LocalDate startDate = LocalDate.parse(academicYear.getStartDate(), formatter);
         LocalDate lastSubmitDate = LocalDate.parse(academicYear.getLastSubmitDate(), formatter);
@@ -55,18 +61,15 @@ public class AcademicYearService {
         if (startDate.isBefore(LocalDate.now())) {
             throw new IllegalArgumentException("Start Date cannot be before today");
         }
-        if (lastSubmitDate.isBefore(startDate.plusWeeks(2))){
+        if (lastSubmitDate.isBefore(startDate.plusWeeks(2))) {
             throw new IllegalArgumentException("Last Submit Date must be at least 2 weeks after Start Date");
         }
-        if(endDate.isBefore(lastSubmitDate.plusWeeks(2))){
+        if (endDate.isBefore(lastSubmitDate.plusWeeks(2))) {
             throw new IllegalArgumentException("End Date must be at least 2 weeks after Last Submit Date");
         }
 
-        if (existingAcademicYear.isEmpty()) {
-            return academicYearRepo.save(academicYear);
-        } else {
-            throw new EntityAlreadyExistException(academicYear.getName() + " Academic Year");
-        }
+        checkName(academicYear.getName());
+        return academicYearRepo.save(academicYear);
     }
 
     public AcademicYear updatAcademicYear(int academicYearId, AcademicYear academicYear) {
@@ -84,20 +87,18 @@ public class AcademicYearService {
         if (startDate.isBefore(LocalDate.now())) {
             throw new IllegalArgumentException("Start Date cannot be before today");
         }
-        if (lastSubmitDate.isBefore(startDate.plusWeeks(2))){
+        if (lastSubmitDate.isBefore(startDate.plusWeeks(2))) {
             throw new IllegalArgumentException("Last Submit Date must be at least 2 weeks after Start Date");
         }
-        if(endDate.isBefore(lastSubmitDate.plusWeeks(2))){
+        if (endDate.isBefore(lastSubmitDate.plusWeeks(2))) {
             throw new IllegalArgumentException("End Date must be at least 2 weeks after Last Submit Date");
         }
         existingAcademicYear.setStartDate(academicYear.getStartDate());
         existingAcademicYear.setLastSubmitDate(academicYear.getLastSubmitDate());
         existingAcademicYear.setEndDate(academicYear.getEndDate());
 
-
-            existingAcademicYear.setName(academicYear.getName());
-            return academicYearRepo.save(existingAcademicYear);
+        existingAcademicYear.setName(academicYear.getName());
+        checkName(academicYear.getName());
+        return academicYearRepo.save(existingAcademicYear);
     }
 }
-
-

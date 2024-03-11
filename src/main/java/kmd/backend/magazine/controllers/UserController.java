@@ -7,6 +7,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import kmd.backend.magazine.dtos.UserRequestDto;
 import kmd.backend.magazine.models.User;
 import kmd.backend.magazine.services.UserService;
 
@@ -62,10 +64,9 @@ public class UserController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addUser(@RequestParam("profilePhoto") MultipartFile profilePhoto,
-            @RequestParam("user") String userStr) throws Exception {
-        User user = objectMapper.readValue(userStr, User.class);
-        userService.saveUser(profilePhoto, user);
+    public ResponseEntity<?> addUser(@ModelAttribute UserRequestDto userRequestDto) throws Exception {
+
+        userService.saveUser(userRequestDto);
         return ResponseEntity.ok().body("User Added");
     }
 
@@ -75,10 +76,8 @@ public class UserController {
     }
 
     @PostMapping("/update/{userId}")
-    public ResponseEntity<?> updateUser(@RequestParam("profilePhoto") MultipartFile profilePhoto,
-            @RequestParam("user") String userUpdateStr, @PathVariable int userId) throws Exception {
-        User updateUser = objectMapper.readValue(userUpdateStr, User.class);
-        userService.updateUser(profilePhoto, updateUser, userId);
+    public ResponseEntity<?> updateUser(@ModelAttribute UserRequestDto userRequestDto, @PathVariable int userId) throws Exception {
+        userService.updateUser(userRequestDto, userId);
         return ResponseEntity.ok().body("User Updated!");
     }
 

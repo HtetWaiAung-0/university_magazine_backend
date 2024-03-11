@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,13 +31,13 @@ public class AcademicYearController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addAcademicYear(@RequestBody AcademicYear academicYear) {
+    public ResponseEntity<?> addAcademicYear(@ModelAttribute AcademicYear academicYear) {
         academicYearService.addAcademicYear(academicYear);
         return ResponseEntity.ok().body("Academic Year added");
     }
 
     @PostMapping("/update/{academicYearId}")
-    public ResponseEntity<?> updateAcademicYear(@PathVariable int academicYearId, @RequestBody AcademicYear academicYear) {
+    public ResponseEntity<?> updateAcademicYear(@PathVariable int academicYearId, @ModelAttribute AcademicYear academicYear) {
         academicYearService.updatAcademicYear(academicYearId, academicYear);
         return ResponseEntity.ok().body("Academic Year updated");
     }
