@@ -55,11 +55,21 @@ public class FacultyService {
     }
 
     public Faculty updateFaculty(FacultyRequestDto facultyRequestDto, int facultyId)throws Exception {
+        checkFacultyName(facultyRequestDto.getName());
         Faculty existingFaculty = facultyRepo.findById(facultyId).get();
         if (existingFaculty == null) {
             throw new EntityNotFoundException("Faculty not found");
         }
         existingFaculty.setName(facultyRequestDto.getName());
         return facultyRepo.save(existingFaculty);
+    }
+
+    public String checkFacultyName(String name) {
+        if (facultyRepo.findByName(name).size() > 0) {
+            throw new EntityAlreadyExistException("Faculty is already added");
+        } else {
+            return "Faculty is available";
+        }
+
     }
 }

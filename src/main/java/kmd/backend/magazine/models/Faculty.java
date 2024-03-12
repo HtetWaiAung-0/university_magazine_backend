@@ -18,7 +18,7 @@ import jakarta.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Faculty extends BaseEntity {
-    @Column(name = "name", length = 255, nullable = false)
+    @Column(name = "name", length = 255, nullable = false, unique = true)
     private String name;
 
     @Column(name = "delete_status", columnDefinition = "BOOLEAN DEFAULT false")
