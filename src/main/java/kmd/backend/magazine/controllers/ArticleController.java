@@ -26,8 +26,6 @@ import kmd.backend.magazine.services.ArticleService;
 public class ArticleController {
     @Autowired
     private ArticleService articleService;
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @GetMapping()
     public ResponseEntity<?> getAllArticles() {

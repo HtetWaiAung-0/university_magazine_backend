@@ -11,7 +11,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import kmd.backend.magazine.dtos.ArticelRequestDto;
+import kmd.backend.magazine.dtos.ArticelResponseDto;
 import kmd.backend.magazine.dtos.ArticleDto;
+import kmd.backend.magazine.dtos.UserResponseDto;
 import kmd.backend.magazine.exceptions.EntityNotFoundException;
 import kmd.backend.magazine.models.Article;
 import kmd.backend.magazine.models.User;
@@ -34,7 +36,7 @@ public class ArticleService {
 
     }
 
-    public ArticleDto getArticle(int articleId) {
+    public ArticelResponseDto getArticle(int articleId) {
         Article article = new Article();
         try {
             article = getArticleRaw(articleId);
@@ -46,33 +48,37 @@ public class ArticleService {
         String coverPhotoDownloadURL = commonService.fileDownloadURL("api/v1/article/coverPhoto",
                 article.getCoverPhotoData(),
                 article.getCoverPhotoName(), article.getId());
-        return new ArticleDto(article.getId(), article.getTitle(), fileDownloadURL, coverPhotoDownloadURL,
+        UserResponseDto userResponseDto = userService.getUser(article.getUser().getId());
+        return new ArticelResponseDto(article.getId(), article.getTitle(), fileDownloadURL, coverPhotoDownloadURL,
                 article.isApproveStatus(), article.isDeleteStatus(), article.getCreatedDate(),
-                article.getUpdatedDate(), article.getAcademicYear(), article.getUser());
+                article.getUpdatedDate(), article.getAcademicYear(), userResponseDto);
     }
 
-    public List<ArticleDto> getAllArticles() {
-        List<ArticleDto> articleDtos = new ArrayList<>();
+    public List<ArticelResponseDto> getAllArticles() {
+        List<ArticelResponseDto> articelResponseDtos = new ArrayList<>();
         for (Article article : articlesRepo.findAll()) {
             String fileDownloadURL = commonService.fileDownloadURL("api/v1/article/file", article.getFileData(),
                     article.getFileName(), article.getId());
             String coverPhotoDownloadURL = commonService.fileDownloadURL("api/v1/article/coverPhoto",
                     article.getCoverPhotoData(),
                     article.getCoverPhotoName(), article.getId());
-            articleDtos
-                    .add(new ArticleDto(article.getId(), article.getTitle(), fileDownloadURL, coverPhotoDownloadURL,
+
+            UserResponseDto userResponseDto = userService.getUser(article.getUser().getId());
+            articelResponseDtos
+                    .add(new ArticelResponseDto(article.getId(), article.getTitle(), fileDownloadURL, coverPhotoDownloadURL,
                             article.isApproveStatus(), article.isDeleteStatus(), article.getCreatedDate(),
-                            article.getUpdatedDate(), article.getAcademicYear(), article.getUser()));
+                            article.getUpdatedDate(), article.getAcademicYear(), userResponseDto));
         }
-        return articleDtos;
+        return articelResponseDtos;
     }
 
     public Article saveArticle(ArticelRequestDto articelRequestDto) throws Exception {
         Article article = new Article();
-        String fileName = StringUtils.cleanPath(articelRequestDto.getFile().getOriginalFilename());
-        String coverPhotoName = StringUtils.cleanPath(articelRequestDto.getCoverPhoto().getOriginalFilename());
+        
+        
         try {
             if (!articelRequestDto.getFile().isEmpty()) {
+                String fileName = StringUtils.cleanPath(articelRequestDto.getFile().getOriginalFilename());
                 if (fileName.contains("..")) {
                     throw new Exception("Filename contains invalid path sequence "
                             + fileName);
@@ -82,6 +88,7 @@ public class ArticleService {
                 article.setFileType(articelRequestDto.getFile().getContentType());
             }
             if (!articelRequestDto.getCoverPhoto().isEmpty()) {
+                String coverPhotoName = StringUtils.cleanPath(articelRequestDto.getCoverPhoto().getOriginalFilename());
                 if (coverPhotoName.contains("..")) {
                     throw new Exception("Cover Photo Name contains invalid path sequence "
                             + coverPhotoName);
@@ -105,27 +112,71 @@ public class ArticleService {
         }
     }
 
-    public Article updateArticle(ArticelRequestDto articelRequestDto,int articelId) throws Exception {
+    // public Article updateArticle(ArticelRequestDto articelRequestDto,int articelId) throws Exception {
 
+    //     Article existingArticle = getArticleRaw(articelId);
+
+    //     if (existingArticle != null) {
+            
+            
+    //         try {
+    //             if (!articelRequestDto.getFile().isEmpty()) {
+    //                 String fileName = StringUtils.cleanPath(articelRequestDto.getFile().getOriginalFilename());
+    //                 if (fileName.contains("..")) {
+    //                     throw new Exception("Filename contains invalid path sequence "
+    //                             + fileName);
+    //                 }
+    //                 existingArticle.setFileData(articelRequestDto.getFile().getBytes());
+    //                 existingArticle.setFileName(fileName);
+    //                 existingArticle.setFileType(articelRequestDto.getFile().getContentType());
+    //             }
+    //             if (!articelRequestDto.getCoverPhoto().isEmpty()) {
+    //                 String coverPhotoName = StringUtils.cleanPath(articelRequestDto.getCoverPhoto().getOriginalFilename());
+    //                 if (coverPhotoName.contains("..")) {
+    //                     throw new Exception("Cover Photo Name contains invalid path sequence "
+    //                             + coverPhotoName);
+    //                 }
+    //                 existingArticle.setCoverPhotoData(articelRequestDto.getCoverPhoto().getBytes());
+    //                 existingArticle.setCoverPhotoName(coverPhotoName);
+    //                 existingArticle.setCoverPhotoType(articelRequestDto.getCoverPhoto().getContentType());
+    //             }
+    //             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+    //             existingArticle.setUpdatedDate(LocalDate.now().format(formatter));
+
+
+    //             existingArticle.setTitle(articelRequestDto.getTitle());
+    //             existingArticle.setAcademicYear(academicYearService.getAcademicYear(articelRequestDto.getAcademicYear()));
+    //             existingArticle.setUser(userService.getUserRaw(articelRequestDto.getUser()));
+
+    //             return articlesRepo.save(existingArticle);
+    //         } catch (Exception e) {
+    //             throw new Exception(e.getMessage());
+    //         }
+    //     } else {
+    //         throw new EntityNotFoundException("Article not found!");
+    //     }
+
+    //}
+
+    public Article updateArticle(ArticelRequestDto articelRequestDto, int articelId) throws Exception {
+        
         Article existingArticle = getArticleRaw(articelId);
-
+    
         if (existingArticle != null) {
-            String fileName = StringUtils.cleanPath(articelRequestDto.getFile().getOriginalFilename());
-            String coverPhotoName = StringUtils.cleanPath(articelRequestDto.getCoverPhoto().getOriginalFilename());
             try {
-                if (!articelRequestDto.getFile().isEmpty()) {
+                if (articelRequestDto.getFile() != null && !articelRequestDto.getFile().isEmpty()) {
+                    String fileName = StringUtils.cleanPath(articelRequestDto.getFile().getOriginalFilename());
                     if (fileName.contains("..")) {
-                        throw new Exception("Filename contains invalid path sequence "
-                                + fileName);
+                        throw new Exception("Filename contains invalid path sequence " + fileName);
                     }
                     existingArticle.setFileData(articelRequestDto.getFile().getBytes());
                     existingArticle.setFileName(fileName);
                     existingArticle.setFileType(articelRequestDto.getFile().getContentType());
                 }
-                if (!articelRequestDto.getCoverPhoto().isEmpty()) {
+                if (articelRequestDto.getCoverPhoto() != null && !articelRequestDto.getCoverPhoto().isEmpty()) {
+                    String coverPhotoName = StringUtils.cleanPath(articelRequestDto.getCoverPhoto().getOriginalFilename());
                     if (coverPhotoName.contains("..")) {
-                        throw new Exception("Cover Photo Name contains invalid path sequence "
-                                + coverPhotoName);
+                        throw new Exception("Cover Photo Name contains invalid path sequence " + coverPhotoName);
                     }
                     existingArticle.setCoverPhotoData(articelRequestDto.getCoverPhoto().getBytes());
                     existingArticle.setCoverPhotoName(coverPhotoName);
@@ -133,12 +184,11 @@ public class ArticleService {
                 }
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
                 existingArticle.setUpdatedDate(LocalDate.now().format(formatter));
-
-
+                existingArticle.setId(articelId);
                 existingArticle.setTitle(articelRequestDto.getTitle());
                 existingArticle.setAcademicYear(academicYearService.getAcademicYear(articelRequestDto.getAcademicYear()));
                 existingArticle.setUser(userService.getUserRaw(articelRequestDto.getUser()));
-
+    
                 return articlesRepo.save(existingArticle);
             } catch (Exception e) {
                 throw new Exception(e.getMessage());
@@ -146,8 +196,8 @@ public class ArticleService {
         } else {
             throw new EntityNotFoundException("Article not found!");
         }
-
     }
+    
 
     public void setApproveArticle(int articleId,boolean status) throws Exception {
         try {
