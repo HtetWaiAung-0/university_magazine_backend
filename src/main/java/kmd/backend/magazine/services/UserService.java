@@ -1,21 +1,15 @@
 package kmd.backend.magazine.services;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.util.StringUtils;
-
 import kmd.backend.magazine.dtos.UserRequestDto;
 import kmd.backend.magazine.dtos.UserResponseDto;
 import kmd.backend.magazine.exceptions.EntityAlreadyExistException;
 import kmd.backend.magazine.exceptions.EntityNotFoundException;
-import kmd.backend.magazine.models.Faculty;
 import kmd.backend.magazine.models.User;
 import kmd.backend.magazine.repos.UserRepo;
 
@@ -95,7 +89,7 @@ public class UserService {
                 user.setRole(userRequestDto.getRole());
                 if (userRequestDto.getFaculty() != 0) {
                     user.setFaculty(facultyService.getFacultyById(userRequestDto.getFaculty()));
-                }else{
+                } else {
                     user.setFaculty(null);
                 }
                 return usersRepo.save(user);
