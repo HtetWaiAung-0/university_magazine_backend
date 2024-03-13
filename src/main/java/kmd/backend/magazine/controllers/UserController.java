@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kmd.backend.magazine.dtos.UserRequestDto;
 import kmd.backend.magazine.models.User;
@@ -28,8 +27,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @GetMapping
     public ResponseEntity<?> getAllUsers() {

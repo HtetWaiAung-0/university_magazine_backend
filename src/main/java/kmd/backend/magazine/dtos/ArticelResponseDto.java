@@ -1,7 +1,6 @@
 package kmd.backend.magazine.dtos;
 
 import kmd.backend.magazine.models.AcademicYear;
-import kmd.backend.magazine.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -3,8 +3,6 @@ import java.sql.Types;
 
 import org.hibernate.annotations.JdbcTypeCode;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
