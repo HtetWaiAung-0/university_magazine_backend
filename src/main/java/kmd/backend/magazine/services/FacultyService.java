@@ -66,7 +66,7 @@ public class FacultyService {
 
     public String checkFacultyName(String name) {
         if (facultyRepo.findByName(name).size() > 0) {
-            throw new EntityAlreadyExistException("Faculty is already added");
+            throw new EntityAlreadyExistException("Faculty");
         } else {
             return "Faculty is available";
         }
