@@ -42,7 +42,7 @@ public class UserService {
         try {
             user = getUserRaw(userId);
         } catch (Exception e) {
-            throw new EntityNotFoundException("User not found!");
+            throw new EntityNotFoundException("User");
         }
         String downloadURL = commonService.fileDownloadURL("api/v1/user/profilePhoto", user.getProfilePhotoData(),
                 user.getProfilePhotoName(), user.getId());
@@ -151,7 +151,7 @@ public class UserService {
             return user;
         }
         else {
-            throw new EntityNotFoundException("User not found!");
+            throw new EntityNotFoundException("User");
         }
     }
 

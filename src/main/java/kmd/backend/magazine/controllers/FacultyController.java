@@ -4,6 +4,7 @@ import kmd.backend.magazine.dtos.FacultyRequestDto;
 import kmd.backend.magazine.services.FacultyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,11 +30,11 @@ public class FacultyController {
         return ResponseEntity.ok().body("Faculty Added");
     }
 
-    // @DeleteMapping("/{facultyId}")
-    // public ResponseEntity<?> deleteFaculty(@PathVariable int facultyId) {
-    //     facultyService.deleteFacultyById(facultyId);
-    //     return ResponseEntity.ok().body("Faculty deleted");
-    // }
+    @DeleteMapping("/{facultyId}")
+    public ResponseEntity<?> deleteFaculty(@PathVariable int facultyId) {
+        facultyService.deleteFacultyById(facultyId);
+        return ResponseEntity.ok().body("Faculty deleted");
+    }
 
     @GetMapping("/{facultyId}")
     public ResponseEntity<?> getFaculty(@PathVariable int facultyId) {
