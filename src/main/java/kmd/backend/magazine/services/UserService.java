@@ -75,10 +75,10 @@ public class UserService {
     public User updateUser(UserRequestDto userRequestDto, int userId) throws Exception {
         User user = getUserRaw(userId);
         if (user != null) {
-            @SuppressWarnings("null")
-            String fileName = StringUtils.cleanPath(userRequestDto.getProfilePhoto().getOriginalFilename());
+            
             try {
-                if (!userRequestDto.getProfilePhoto().isEmpty()) {
+                if (userRequestDto.getProfilePhoto() != null && !userRequestDto.getProfilePhoto().isEmpty()) {
+                    String fileName = StringUtils.cleanPath(userRequestDto.getProfilePhoto().getOriginalFilename());
                     if (fileName.contains("..")) {
                         throw new Exception("Filename contains invalid path sequence "
                                 + fileName);
@@ -107,10 +107,10 @@ public class UserService {
         User user = new User();
         List<User> existingUsers = usersRepo.findByNameAndDeleteStatus(userRequestDto.getName(), false);
         if (existingUsers.isEmpty()) {
-            @SuppressWarnings("null")
-            String fileName = StringUtils.cleanPath(userRequestDto.getProfilePhoto().getOriginalFilename());
+            
             try {
-                if (!userRequestDto.getProfilePhoto().isEmpty()) {
+                if (userRequestDto.getProfilePhoto() != null && !userRequestDto.getProfilePhoto().isEmpty()) {
+                    String fileName = StringUtils.cleanPath(userRequestDto.getProfilePhoto().getOriginalFilename());
                     if (fileName.contains("..")) {
                         throw new Exception("Filename contains invalid path sequence "
                                 + fileName);

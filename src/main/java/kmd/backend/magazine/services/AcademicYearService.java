@@ -27,7 +27,7 @@ public class AcademicYearService {
     }
 
     public AcademicYear saveAcademicYear(AcademicYear academicYear) {
-        List<AcademicYear> existingAcademicYears = academicYearRepo.findByName(academicYear.getName());
+        List<AcademicYear> existingAcademicYears = academicYearRepo.findByNameAndDeleteStatus(academicYear.getName(),false);
         if (existingAcademicYears.isEmpty()) {
             return academicYearRepo.save(academicYear);
         } else {
@@ -101,4 +101,5 @@ public class AcademicYearService {
         checkName(academicYear.getName());
         return academicYearRepo.save(existingAcademicYear);
     }
+
 }

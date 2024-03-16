@@ -2,6 +2,7 @@ package kmd.backend.magazine.dtos;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import io.micrometer.common.lang.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ArticelRequestDto {
+    @Nullable
     private MultipartFile file;
+    @Nullable
     private MultipartFile coverPhoto;
     private String title;
     private int academicYear;
