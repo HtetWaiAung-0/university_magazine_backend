@@ -146,9 +146,11 @@ public class UserService {
     }
 
     public User getUserRaw(int userId) {
-        try {
-            return usersRepo.findByIdAndDeleteStatus(userId, false);
-        } catch (Exception e) {
+        User user = usersRepo.findByIdAndDeleteStatus(userId, false);
+        if(user!=null) {
+            return user;
+        }
+        else {
             throw new EntityNotFoundException("User not found!");
         }
     }

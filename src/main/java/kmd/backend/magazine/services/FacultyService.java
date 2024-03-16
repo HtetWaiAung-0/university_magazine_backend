@@ -27,17 +27,15 @@ public class FacultyService {
 
     public Faculty getFacultyById(int facultyId) {
         return facultyRepo.findById(facultyId)
-            .orElseThrow(() -> new EntityNotFoundException("Faculty not found!"));
-}
+                .orElseThrow(() -> new EntityNotFoundException("Faculty not found!"));
+    }
 
-
-    public Faculty saveFaculty(FacultyRequestDto facultyRequestDto)throws Exception {
+    public Faculty saveFaculty(FacultyRequestDto facultyRequestDto) throws Exception {
         Faculty faculty = new Faculty();
         List<Faculty> existingFaculty = facultyRepo.findByName(facultyRequestDto.getName());
         if (existingFaculty.isEmpty()) {
             faculty.setName(facultyRequestDto.getName());
             return facultyRepo.save(faculty);
-
         } else {
             throw new EntityAlreadyExistException(faculty.getName() + " is already exit ");
         }
@@ -51,10 +49,9 @@ public class FacultyService {
         } else {
             throw new EntityNotFoundException("Faculty not found");
         }
-
     }
 
-    public Faculty updateFaculty(FacultyRequestDto facultyRequestDto, int facultyId)throws Exception {
+    public Faculty updateFaculty(FacultyRequestDto facultyRequestDto, int facultyId) throws Exception {
         checkFacultyName(facultyRequestDto.getName());
         Faculty existingFaculty = facultyRepo.findById(facultyId).get();
         if (existingFaculty == null) {
@@ -70,6 +67,5 @@ public class FacultyService {
         } else {
             return "Faculty is available";
         }
-
     }
 }
