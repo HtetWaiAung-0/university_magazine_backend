@@ -33,8 +33,4 @@ public class Faculty extends BaseEntity {
     @JsonIgnore
     private List<User> users;
 
-    @OneToMany(mappedBy = "faculty", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<Article> articles;
-
 }
