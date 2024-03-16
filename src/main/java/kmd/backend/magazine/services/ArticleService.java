@@ -74,6 +74,7 @@ public class ArticleService {
         
         try {
             if (!articelRequestDto.getFile().isEmpty()) {
+                @SuppressWarnings("null")
                 String fileName = StringUtils.cleanPath(articelRequestDto.getFile().getOriginalFilename());
                 if (fileName.contains("..")) {
                     throw new Exception("Filename contains invalid path sequence "
@@ -84,6 +85,7 @@ public class ArticleService {
                 article.setFileType(articelRequestDto.getFile().getContentType());
             }
             if (!articelRequestDto.getCoverPhoto().isEmpty()) {
+                @SuppressWarnings("null")
                 String coverPhotoName = StringUtils.cleanPath(articelRequestDto.getCoverPhoto().getOriginalFilename());
                 if (coverPhotoName.contains("..")) {
                     throw new Exception("Cover Photo Name contains invalid path sequence "

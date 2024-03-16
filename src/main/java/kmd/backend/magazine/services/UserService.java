@@ -1,4 +1,5 @@
 package kmd.backend.magazine.services;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.tomcat.websocket.AuthenticationException;
@@ -26,7 +27,7 @@ public class UserService {
 
     public List<UserResponseDto> getAllUsers() {
         List<UserResponseDto> userDtos = new ArrayList<>();
-        for (User user : usersRepo.findAll()) {
+        for (User user : usersRepo.findByDeleteStatus(false)) {
             String downloadURL = commonService.fileDownloadURL("api/v1/user/profilePhoto", user.getProfilePhotoData(),
                     user.getProfilePhotoName(), user.getId());
             userDtos.add(new UserResponseDto(user.getId(), user.getName(), user.getRole(), downloadURL,
@@ -52,12 +53,12 @@ public class UserService {
     public void deleteUserById(int userId) {
 
         User user = getUserRaw(userId);
-        if (user == null) {
-            usersRepo.deleteById(userId);
+        if (user != null) {
+            user.setDeleteStatus(true);
+            usersRepo.save(user);
         } else {
-            throw new EntityNotFoundException("Role");
+            throw new EntityNotFoundException("User");
         }
-
     }
 
     public void deleteUserPhoto(int userId) {
@@ -74,6 +75,7 @@ public class UserService {
     public User updateUser(UserRequestDto userRequestDto, int userId) throws Exception {
         User user = getUserRaw(userId);
         if (user != null) {
+            @SuppressWarnings("null")
             String fileName = StringUtils.cleanPath(userRequestDto.getProfilePhoto().getOriginalFilename());
             try {
                 if (!userRequestDto.getProfilePhoto().isEmpty()) {
@@ -103,8 +105,9 @@ public class UserService {
 
     public User saveUser(UserRequestDto userRequestDto) throws Exception {
         User user = new User();
-        List<User> existingUsers = usersRepo.findByName(userRequestDto.getName());
+        List<User> existingUsers = usersRepo.findByNameAndDeleteStatus(userRequestDto.getName(), false);
         if (existingUsers.isEmpty()) {
+            @SuppressWarnings("null")
             String fileName = StringUtils.cleanPath(userRequestDto.getProfilePhoto().getOriginalFilename());
             try {
                 if (!userRequestDto.getProfilePhoto().isEmpty()) {
@@ -126,7 +129,6 @@ public class UserService {
                 user.setPassword(bcrypt.encode(userRequestDto.getPassword()));
                 return usersRepo.save(user);
             } catch (Exception e) {
-                // throw new Exception("Could not save File: " + fileName);
                 throw new Exception(e.getMessage());
             }
         } else {
@@ -144,14 +146,17 @@ public class UserService {
     }
 
     public User getUserRaw(int userId) {
-        return usersRepo.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found!"));
+        try {
+            return usersRepo.findByIdAndDeleteStatus(userId, false);
+        } catch (Exception e) {
+            throw new EntityNotFoundException("User not found!");
+        }
     }
 
     public void authenticateUser(String username, String password) throws AuthenticationException {
         User existingUser = null;
         try {
-            existingUser = usersRepo.findByName(username).get(0);
+            existingUser = usersRepo.findByNameAndDeleteStatus(username, false).get(0);
         } catch (Exception e) {
             throw new AuthenticationException("Authentication Failed");
         }
