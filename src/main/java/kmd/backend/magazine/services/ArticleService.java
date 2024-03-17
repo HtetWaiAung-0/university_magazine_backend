@@ -1,10 +1,8 @@
 package kmd.backend.magazine.services;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -27,9 +25,13 @@ public class ArticleService {
     private AcademicYearService academicYearService;
 
     public Article getArticleRaw(int articelId) {
-
-        return articlesRepo.findById(articelId).orElseThrow(() -> new EntityNotFoundException("Article not found!"));
-
+        Article article = articlesRepo.findByIdAndDeleteStatus(articelId, false);
+        if(article!=null) {
+            return article;
+        }
+        else {
+            throw new EntityNotFoundException("Article");
+        }
     }
 
     public ArticelResponseDto getArticle(int articleId) {
@@ -52,7 +54,7 @@ public class ArticleService {
 
     public List<ArticelResponseDto> getAllArticles() {
         List<ArticelResponseDto> articelResponseDtos = new ArrayList<>();
-        for (Article article : articlesRepo.findAll()) {
+        for (Article article : articlesRepo.findByDeleteStatus(false)) {
             String fileDownloadURL = commonService.fileDownloadURL("api/v1/article/file", article.getFileData(),
                     article.getFileName(), article.getId());
             String coverPhotoDownloadURL = commonService.fileDownloadURL("api/v1/article/coverPhoto",
@@ -204,6 +206,16 @@ public class ArticleService {
             articlesRepo.save(existingArticle);
         } catch (Exception e) {
             throw new EntityNotFoundException("Article not found!");
+        }
+    }
+
+    public void deleteArticle(int articleId) throws Exception {
+       Article article = getArticleRaw(articleId);
+        if (article != null) {
+            article.setDeleteStatus(true);
+            articlesRepo.save(article);
+        } else {
+            throw new EntityNotFoundException("Article");
         }
     }
 

@@ -65,4 +65,12 @@ public class CommentService {
 
     }
 
+    public void deleteComment(int id) {
+        Comment exitingCmt = commentRepo.findById(id).get();
+        if (exitingCmt == null) {
+            throw new EntityNotFoundException("Comment");
+        }
+        commentRepo.delete(exitingCmt);
+    }
+
 }

@@ -7,13 +7,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import kmd.backend.magazine.dtos.ArticelRequestDto;
 import kmd.backend.magazine.models.Article;
 import kmd.backend.magazine.services.ArticleService;
@@ -86,5 +86,13 @@ public class ArticleController {
                                 + "\"")
                 .body(new ByteArrayResource(article.getCoverPhotoData()));
     }
+
+  
+    @DeleteMapping("/{articleId}")
+    public ResponseEntity<?> deleteArticle(@PathVariable int articleId)throws Exception {
+        articleService.deleteArticle(articleId);
+        return ResponseEntity.ok().body("Article deleted");
+    }
+    
 
 }
