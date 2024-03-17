@@ -2,7 +2,7 @@ package kmd.backend.magazine.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,5 +39,11 @@ public class AcademicYearController {
     public ResponseEntity<?> updateAcademicYear(@PathVariable int academicYearId, @ModelAttribute AcademicYear academicYear) {
         academicYearService.updatAcademicYear(academicYearId, academicYear);
         return ResponseEntity.ok().body("Academic Year updated");
+    }
+
+    @DeleteMapping("/{academicYearId}")
+    public ResponseEntity<?> deleteAcademicYear(@PathVariable int academicYearId) {
+        academicYearService.deleteAcademicYear(academicYearId);
+        return ResponseEntity.ok().body("Academic Year deleted");
     }
 }

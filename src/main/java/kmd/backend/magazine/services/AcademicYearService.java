@@ -18,13 +18,18 @@ public class AcademicYearService {
     private AcademicYearRepo academicYearRepo;
 
     public List<AcademicYear> getAllAcademicYears() {
-        return academicYearRepo.findAll();
+        return academicYearRepo.findByDeleteStatus(false);
     }
 
     public AcademicYear getAcademicYear(int academicYearId) {
-        return academicYearRepo.findById(academicYearId)
-                .orElseThrow(() -> new EntityNotFoundException("AcademicYear ID : " + academicYearId));
+        AcademicYear academicYear = academicYearRepo.findByIdAndDeleteStatus(academicYearId,false);
+        if (academicYear != null) {
+            return academicYear;
+        } else {
+            throw new EntityNotFoundException("AcademicYear");
+        }
     }
+
 
     public AcademicYear saveAcademicYear(AcademicYear academicYear) {
         List<AcademicYear> existingAcademicYears = academicYearRepo.findByNameAndDeleteStatus(academicYear.getName(),false);
@@ -37,16 +42,17 @@ public class AcademicYearService {
     }
 
     public void deleteAcademicYear(int academicYearId) {
-        AcademicYear academicYear = academicYearRepo.findById(academicYearId).get();
+        AcademicYear academicYear = academicYearRepo.findByIdAndDeleteStatus(academicYearId,false);
         if (academicYear != null) {
-            academicYearRepo.deleteById(academicYearId);
+            academicYear.setDeleteStatus(true);
+            academicYearRepo.save(academicYear);
         } else {
             throw new EntityNotFoundException("AcademicYear ID : " + academicYearId);
         }
     }
 
     public void checkName(String name) {
-        List<AcademicYear> existingAcademicYear = academicYearRepo.findByName(name);
+        List<AcademicYear> existingAcademicYear = academicYearRepo.findByNameAndDeleteStatus(name,false);
         if (!existingAcademicYear.isEmpty()) {
             throw new EntityAlreadyExistException(name + " Academic Year");
         }
@@ -74,7 +80,7 @@ public class AcademicYearService {
 
     public AcademicYear updatAcademicYear(int academicYearId, AcademicYear academicYear) {
 
-        AcademicYear existingAcademicYear = academicYearRepo.findById(academicYearId).get();
+        AcademicYear existingAcademicYear = academicYearRepo.findByIdAndDeleteStatus(academicYearId,false);
         if (existingAcademicYear == null) {
             throw new EntityNotFoundException("AcademicYear ID : " + academicYearId);
         }

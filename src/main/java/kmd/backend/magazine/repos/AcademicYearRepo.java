@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import kmd.backend.magazine.models.AcademicYear;
-import kmd.backend.magazine.services.AcademicYearService;
 
 
 public interface AcademicYearRepo extends JpaRepository<AcademicYear, Integer> {
-    List<AcademicYear> findByNameAndDeleteStatus(String name,boolean deleteStatus);
-    List<AcademicYear> findByName(String name);
-
+  List<AcademicYear> findByNameAndDeleteStatus(String userName,boolean deleteStatus);
+  List<AcademicYear> findByName(String userName);
+  AcademicYear findByIdAndDeleteStatus(int id, boolean deleteStatus);
+  List<AcademicYear> findByDeleteStatus(boolean deleteStatus);
 }
