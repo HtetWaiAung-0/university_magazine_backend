@@ -36,8 +36,7 @@ public class UserController {
     @GetMapping("/login")
     public ResponseEntity<?> login(@RequestParam("username") String username, @RequestParam("password") String password)
             throws AuthenticationException {
-        userService.authenticateUser(username, password);
-        return ResponseEntity.ok().body("Authention successful");
+        return ResponseEntity.ok().body(userService.authenticateUser(username, password));
     }
 
     @PostMapping("/changepassword/{id}")

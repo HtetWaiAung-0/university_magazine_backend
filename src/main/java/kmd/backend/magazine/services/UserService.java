@@ -155,7 +155,7 @@ public class UserService {
         }
     }
 
-    public void authenticateUser(String username, String password) throws AuthenticationException {
+    public UserResponseDto authenticateUser(String username, String password) throws AuthenticationException {
         User existingUser = null;
         try {
             existingUser = usersRepo.findByNameAndDeleteStatus(username, false).get(0);
@@ -167,6 +167,9 @@ public class UserService {
             if (!bcrypt.matches(password, existingUser.getPassword())) {
                 throw new AuthenticationException("Authentication Failed");
             }
+            return getUser(existingUser.getId());
+        }else{
+            throw new AuthenticationException("Authentication Failed");
         }
     }
 

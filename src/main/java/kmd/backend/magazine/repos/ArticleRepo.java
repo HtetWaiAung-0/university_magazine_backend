@@ -10,8 +10,4 @@ public interface ArticleRepo extends JpaRepository<Article, Integer> {
 
     List<Article> findByDeleteStatus(boolean deleteStatus);
 
-    List<Article> findByNameAndDeleteStatus(String articleName, boolean deleteStatus);
-
-    List<Article> findByName(String articleName);
-
 }
