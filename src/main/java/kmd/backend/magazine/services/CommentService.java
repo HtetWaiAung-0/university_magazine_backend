@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import kmd.backend.magazine.dtos.CommentRequestDto;
 import kmd.backend.magazine.dtos.CommentResponseDto;
+import kmd.backend.magazine.dtos.UserResponseDto;
 import kmd.backend.magazine.exceptions.EntityNotFoundException;
 import kmd.backend.magazine.models.Article;
 import kmd.backend.magazine.models.Comment;
@@ -29,12 +30,20 @@ public class CommentService {
         List<CommentResponseDto> cmtDto = new ArrayList<>();
         for (Comment cmt : commentList) {
             CommentResponseDto cmtRespDto = new CommentResponseDto();
+
+            try {
+                UserResponseDto user = userService.getUser(cmt.getUser().getId());
+                cmtRespDto.setUser(user);
+
+            } catch (Exception e) {
+                continue;
+            }
             cmtRespDto.setId(cmt.getId());
             cmtRespDto.setArticle(articleService.getArticle(cmt.getArticle().getId()));
             cmtRespDto.setCreatedAt(cmt.getCreatedAt());
             cmtRespDto.setComment(cmt.getComment());
-            cmtRespDto.setUser(userService.getUser(cmt.getUser().getId()));
             cmtDto.add(cmtRespDto);
+
         }
         return cmtDto;
     }
