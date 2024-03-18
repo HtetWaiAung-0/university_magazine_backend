@@ -19,14 +19,12 @@ public class CommentService {
     @Autowired
     private CommentRepo commentRepo;
     @Autowired
-    private ArticleRepo articleRepo;
-    @Autowired
     private ArticleService articleService;
     @Autowired
     private UserService userService;
 
     public List<CommentResponseDto> getAllComment(int articleId) {
-        Article article = articleRepo.findById(articleId).get();
+        Article article = articleService.getArticleRaw(articleId);
         List<Comment> commentList = commentRepo.findByArticle(article);
         List<CommentResponseDto> cmtDto = new ArrayList<>();
         for (Comment cmt : commentList) {
