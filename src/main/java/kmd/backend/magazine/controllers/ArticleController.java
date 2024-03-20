@@ -49,21 +49,15 @@ public class ArticleController {
 
     @PostMapping("/approve/{articleId}")
     public ResponseEntity<?> approveArticle(@PathVariable int articleId) throws Exception {
-        articleService.setApproveArticle(articleId, true);
+        articleService.setApproveArticle(articleId, Article.ApproveStatus.APPROVED);
         return ResponseEntity.ok().body("Article approved");
     }
 
     @PostMapping("/reject/{articleId}")
     public ResponseEntity<?> rejectArticle(@PathVariable int articleId) throws Exception {
-        articleService.setApproveArticle(articleId, false);
+        articleService.setApproveArticle(articleId, Article.ApproveStatus.REJECTED);
         return ResponseEntity.ok().body("Article rejected");
     }
-
-    // @DeleteMapping("/{articleId}")
-    // public ResponseEntity<?> deleteArticle(@PathVariable int articleId) {
-    // return
-    // ResponseEntity.status(HttpStatus.OK).body(articleService.deleteArticle(articleId));
-    // }
 
     @GetMapping("/file/download/{articleId}")
     public ResponseEntity<Resource> downloadFile(@PathVariable int articleId) throws Exception {

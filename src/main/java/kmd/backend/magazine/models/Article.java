@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
@@ -26,9 +28,13 @@ import jakarta.persistence.Table;
 @Setter
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class Article extends BaseEntity {
+
+    public enum ApproveStatus {
+        PENDING, APPROVED, REJECTED
+    }
+
     @Column(name = "title", length = 255, nullable = false)
     private String title;
 
@@ -55,7 +61,16 @@ public class Article extends BaseEntity {
     private byte[] coverPhotoData;
 
     @Column(name = "approve_status")
-    private boolean approveStatus;
+    @Enumerated(EnumType.STRING)
+    private ApproveStatus approveStatus;
+
+    public String getApproveStatusAsString() {
+        return approveStatus != null ? approveStatus.name() : null;
+    }
+
+    public Article() {
+        this.approveStatus = ApproveStatus.PENDING; // Set default value to PENDING
+    }
 
     @Column(name = "delete_status", columnDefinition = "BOOLEAN DEFAULT false")
     private boolean deleteStatus;

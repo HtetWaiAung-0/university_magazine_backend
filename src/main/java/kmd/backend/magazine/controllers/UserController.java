@@ -33,7 +33,7 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getAllUsers());
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestParam("username") String username, @RequestParam("password") String password)
             throws AuthenticationException {
         return ResponseEntity.ok().body(userService.authenticateUser(username, password));

@@ -48,7 +48,7 @@ public class ArticleService {
                 article.getCoverPhotoName(), article.getId());
         UserResponseDto userResponseDto = userService.getUser(article.getUser().getId());
         return new ArticelResponseDto(article.getId(), article.getTitle(), fileDownloadURL, coverPhotoDownloadURL,
-                article.isApproveStatus(), article.isDeleteStatus(), article.getCreatedDate(),
+                article.getApproveStatusAsString(), article.isDeleteStatus(), article.getCreatedDate(),
                 article.getUpdatedDate(), article.getAcademicYear(), userResponseDto);
     }
 
@@ -64,7 +64,7 @@ public class ArticleService {
             UserResponseDto userResponseDto = userService.getUser(article.getUser().getId());
             articelResponseDtos
                     .add(new ArticelResponseDto(article.getId(), article.getTitle(), fileDownloadURL, coverPhotoDownloadURL,
-                            article.isApproveStatus(), article.isDeleteStatus(), article.getCreatedDate(),
+                            article.getApproveStatusAsString(), article.isDeleteStatus(), article.getCreatedDate(),
                             article.getUpdatedDate(), article.getAcademicYear(), userResponseDto));
         }
         return articelResponseDtos;
@@ -112,52 +112,6 @@ public class ArticleService {
         }
     }
 
-    // public Article updateArticle(ArticelRequestDto articelRequestDto,int articelId) throws Exception {
-
-    //     Article existingArticle = getArticleRaw(articelId);
-
-    //     if (existingArticle != null) {
-            
-            
-    //         try {
-    //             if (!articelRequestDto.getFile().isEmpty()) {
-    //                 String fileName = StringUtils.cleanPath(articelRequestDto.getFile().getOriginalFilename());
-    //                 if (fileName.contains("..")) {
-    //                     throw new Exception("Filename contains invalid path sequence "
-    //                             + fileName);
-    //                 }
-    //                 existingArticle.setFileData(articelRequestDto.getFile().getBytes());
-    //                 existingArticle.setFileName(fileName);
-    //                 existingArticle.setFileType(articelRequestDto.getFile().getContentType());
-    //             }
-    //             if (!articelRequestDto.getCoverPhoto().isEmpty()) {
-    //                 String coverPhotoName = StringUtils.cleanPath(articelRequestDto.getCoverPhoto().getOriginalFilename());
-    //                 if (coverPhotoName.contains("..")) {
-    //                     throw new Exception("Cover Photo Name contains invalid path sequence "
-    //                             + coverPhotoName);
-    //                 }
-    //                 existingArticle.setCoverPhotoData(articelRequestDto.getCoverPhoto().getBytes());
-    //                 existingArticle.setCoverPhotoName(coverPhotoName);
-    //                 existingArticle.setCoverPhotoType(articelRequestDto.getCoverPhoto().getContentType());
-    //             }
-    //             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-    //             existingArticle.setUpdatedDate(LocalDate.now().format(formatter));
-
-
-    //             existingArticle.setTitle(articelRequestDto.getTitle());
-    //             existingArticle.setAcademicYear(academicYearService.getAcademicYear(articelRequestDto.getAcademicYear()));
-    //             existingArticle.setUser(userService.getUserRaw(articelRequestDto.getUser()));
-
-    //             return articlesRepo.save(existingArticle);
-    //         } catch (Exception e) {
-    //             throw new Exception(e.getMessage());
-    //         }
-    //     } else {
-    //         throw new EntityNotFoundException("Article not found!");
-    //     }
-
-    //}
-
     public Article updateArticle(ArticelRequestDto articelRequestDto, int articelId) throws Exception {
         
         Article existingArticle = getArticleRaw(articelId);
@@ -197,13 +151,14 @@ public class ArticleService {
             throw new EntityNotFoundException("Article not found!");
         }
     }
-    
 
-    public void setApproveArticle(int articleId,boolean status) throws Exception {
+    public void setApproveArticle(int articleId, Article.ApproveStatus status) throws Exception {
         try {
-            Article existingArticle = articlesRepo.findById(articleId).get();
+            Article existingArticle = articlesRepo.findById(articleId).orElseThrow(() -> new EntityNotFoundException("Article not found!"));
             existingArticle.setApproveStatus(status);
             articlesRepo.save(existingArticle);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid approve status provided.");
         } catch (Exception e) {
             throw new EntityNotFoundException("Article not found!");
         }

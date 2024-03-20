@@ -13,7 +13,7 @@ public class ArticelResponseDto {
     private String title;
     private String file;
     private String coverPhoto;
-    private boolean approveStatus;
+    private String approveStatus;
     private boolean deleteStatus;
     private String createdDate;
     private String updatedDate;
