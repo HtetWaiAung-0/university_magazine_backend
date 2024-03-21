@@ -34,7 +34,7 @@ public class ArticleController {
         return ResponseEntity.status(HttpStatus.OK).body(articleService.getArticle(articleId));
     }
 
-    @GetMapping("/{facultyId}")
+    @GetMapping("/byFaculty/{facultyId}")
     public ResponseEntity<?> getArticlesByFacultyId(@PathVariable int facultyId) {
         return ResponseEntity.status(HttpStatus.OK).body(articleService.getArticlesByFacultyId(facultyId));
     }
@@ -92,6 +92,5 @@ public class ArticleController {
         articleService.deleteArticle(articleId);
         return ResponseEntity.ok().body("Article deleted");
     }
-    
 
 }

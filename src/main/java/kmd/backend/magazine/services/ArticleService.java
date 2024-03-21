@@ -74,10 +74,11 @@ public class ArticleService {
     }
 
     public List<ArticelResponseDto>getArticlesByFacultyId(int faultyId){
-        Faculty faculty = facultyService.getFacultyById(faultyId);
-        List<Article> articleList = articlesRepo.findByFacultyandDeleteStatus(faculty,false);
+
+        List<Article> articles = articlesRepo.findArticleByFacultyId(faultyId);
+
         List<ArticelResponseDto> articleResponseDtos = new ArrayList<>();
-        for (Article article : articleList) {
+        for (Article article : articles) {
             String fileDownloadURL = commonService.fileDownloadURL("api/v1/article/file", article.getFileData(),
                     article.getFileName(), article.getId());
             String coverPhotoDownloadURL = commonService.fileDownloadURL("api/v1/article/coverPhoto",
