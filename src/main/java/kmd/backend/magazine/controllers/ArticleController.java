@@ -34,6 +34,11 @@ public class ArticleController {
         return ResponseEntity.status(HttpStatus.OK).body(articleService.getArticle(articleId));
     }
 
+    @GetMapping("/{facultyId}")
+    public ResponseEntity<?> getArticlesByFacultyId(@PathVariable int facultyId) {
+        return ResponseEntity.status(HttpStatus.OK).body(articleService.getArticlesByFacultyId(facultyId));
+    }
+
     @PostMapping("/add")
     public ResponseEntity<?> addArticle(@ModelAttribute ArticelRequestDto articelRequestDto) throws Exception {
         articleService.saveArticle(articelRequestDto);

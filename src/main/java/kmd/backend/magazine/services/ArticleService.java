@@ -11,6 +11,7 @@ import kmd.backend.magazine.dtos.ArticelResponseDto;
 import kmd.backend.magazine.dtos.UserResponseDto;
 import kmd.backend.magazine.exceptions.EntityNotFoundException;
 import kmd.backend.magazine.models.Article;
+import kmd.backend.magazine.models.Faculty;
 import kmd.backend.magazine.repos.ArticleRepo;
 
 @Service
@@ -23,6 +24,8 @@ public class ArticleService {
     private UserService userService;
     @Autowired
     private AcademicYearService academicYearService;
+    @Autowired
+    private FacultyService facultyService;
 
     public Article getArticleRaw(int articelId) {
         Article article = articlesRepo.findByIdAndDeleteStatus(articelId, false);
@@ -68,6 +71,27 @@ public class ArticleService {
                             article.getUpdatedDate(), article.getAcademicYear(), userResponseDto));
         }
         return articelResponseDtos;
+    }
+
+    public List<ArticelResponseDto>getArticlesByFacultyId(int faultyId){
+        Faculty faculty = facultyService.getFacultyById(faultyId);
+        List<Article> articleList = articlesRepo.findByFacultyandDeleteStatus(faculty,false);
+        List<ArticelResponseDto> articleResponseDtos = new ArrayList<>();
+        for (Article article : articleList) {
+            String fileDownloadURL = commonService.fileDownloadURL("api/v1/article/file", article.getFileData(),
+                    article.getFileName(), article.getId());
+            String coverPhotoDownloadURL = commonService.fileDownloadURL("api/v1/article/coverPhoto",
+                    article.getCoverPhotoData(),
+                    article.getCoverPhotoName(), article.getId());
+
+            UserResponseDto userResponseDto = userService.getUser(article.getUser().getId());
+            articleResponseDtos
+                    .add(new ArticelResponseDto(article.getId(), article.getTitle(), fileDownloadURL, coverPhotoDownloadURL,
+                            article.getApproveStatusAsString(), article.isDeleteStatus(), article.getCreatedDate(),
+                            article.getUpdatedDate(), article.getAcademicYear(), userResponseDto));
+        }
+        return articleResponseDtos;
+
     }
 
     public Article saveArticle(ArticelRequestDto articelRequestDto) throws Exception {
