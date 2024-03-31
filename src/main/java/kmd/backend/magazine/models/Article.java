@@ -12,6 +12,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
@@ -23,7 +24,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import jakarta.persistence.Table;
 
-@Table(name = "article") 
+@Table(name = "article")
 @Entity
 @Setter
 @Getter
@@ -39,7 +40,7 @@ public class Article extends BaseEntity {
     private String title;
 
     @Column(name = "file_name", length = 255)
-    private String fileName; 
+    private String fileName;
 
     @Column(name = "file_type", length = 255)
     private String fileType;
@@ -50,7 +51,7 @@ public class Article extends BaseEntity {
     private byte[] fileData;
 
     @Column(name = "cover_photo_name", length = 255)
-    private String coverPhotoName; 
+    private String coverPhotoName;
 
     @Column(name = "cover_photo_type", length = 255)
     private String coverPhotoType;
@@ -84,14 +85,13 @@ public class Article extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "academic_year_id")
     private AcademicYear academicYear;
-    
+
     @ManyToOne()
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Comment> comment;
 
 }
-
