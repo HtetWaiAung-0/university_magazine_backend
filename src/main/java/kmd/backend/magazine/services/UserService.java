@@ -31,7 +31,7 @@ public class UserService {
         for (User user : usersRepo.findByDeleteStatus(false)) {
             String downloadURL = commonService.fileDownloadURL("api/v1/user/profilePhoto", user.getProfilePhotoData(),
                     user.getProfilePhotoName(), user.getId());
-            userDtos.add(new UserResponseDto(user.getId(), user.getName(), user.getRoleAsString(), downloadURL,
+            userDtos.add(new UserResponseDto(user.getId(), user.getName(), user.getRoleAsString(),user.getEmail(), downloadURL,
                     user.isDeleteStatus(),
                     user.getFaculty()));
         }
@@ -47,7 +47,7 @@ public class UserService {
         }
         String downloadURL = commonService.fileDownloadURL("api/v1/user/profilePhoto", user.getProfilePhotoData(),
                 user.getProfilePhotoName(), user.getId());
-        return new UserResponseDto(user.getId(), user.getName(), user.getRole().toString(), downloadURL,
+        return new UserResponseDto(user.getId(), user.getName(), user.getRole().toString(),user.getEmail(), downloadURL,
                 user.isDeleteStatus(),
                 user.getFaculty());
     }
@@ -143,7 +143,7 @@ public class UserService {
     }
 
     public String checkUserName(String name) {
-        if (usersRepo.findByName(name).size() > 0) {
+        if (usersRepo.findByName(name).isPresent()) {
             throw new EntityAlreadyExistException("User is already added");
         } else {
             return "Username is available";

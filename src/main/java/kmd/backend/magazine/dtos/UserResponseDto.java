@@ -12,6 +12,7 @@ public class UserResponseDto {
     private int id;
     private String name;
     private String role;
+    private String email;
     private String profilePhoto; 
     private boolean deleteStatus;
     private Faculty faculty;

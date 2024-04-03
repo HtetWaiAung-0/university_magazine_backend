@@ -1,5 +1,7 @@
 package kmd.backend.magazine.repos;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -7,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import kmd.backend.magazine.models.User;
 public interface UserRepo extends JpaRepository<User, Integer> {
   List<User> findByNameAndDeleteStatus(String userName,boolean deleteStatus);
-  List<User> findByName(String userName);
+  Optional<User> findByName(String userName);
   User findByIdAndDeleteStatus(int id, boolean deleteStatus);
   List<User> findByDeleteStatus(boolean deleteStatus);
 

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import kmd.backend.magazine.models.Article;
-import kmd.backend.magazine.models.Comment;
 import kmd.backend.magazine.models.Faculty;
 import kmd.backend.magazine.models.User;
 import kmd.backend.magazine.repos.ArticleRepo;
@@ -62,9 +61,7 @@ public class EmailService {
                                     + article.getTitle());
                             javaMailSender.send(message);
                         }
-
                     }
-
                 }
 
             }else{

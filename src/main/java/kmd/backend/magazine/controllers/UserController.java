@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 
 import kmd.backend.magazine.dtos.UserRequestDto;
 import kmd.backend.magazine.models.User;
+import kmd.backend.magazine.services.AuthenticationService;
 import kmd.backend.magazine.services.UserService;
 
 @RestController
@@ -28,6 +29,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private AuthenticationService authenticationService;
+
     @GetMapping
     public ResponseEntity<?> getAllUsers() {
         return ResponseEntity.ok().body(userService.getAllUsers());
@@ -36,7 +40,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestParam("username") String username, @RequestParam("password") String password)
             throws AuthenticationException {
-        return ResponseEntity.ok().body(userService.authenticateUser(username, password));
+        return ResponseEntity.ok().body(authenticationService.authenticate(username, password));
     }
 
     @PostMapping("/changepassword/{id}")
