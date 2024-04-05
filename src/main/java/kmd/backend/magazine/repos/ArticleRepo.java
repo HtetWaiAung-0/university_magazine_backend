@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import kmd.backend.magazine.models.Article;
-import kmd.backend.magazine.models.Faculty;
 
 
 public interface ArticleRepo extends JpaRepository<Article, Integer> {
