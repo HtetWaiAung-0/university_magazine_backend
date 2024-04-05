@@ -2,6 +2,8 @@ package kmd.backend.magazine.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -109,7 +111,7 @@ public class UserService {
 
     public User saveUser(UserRequestDto userRequestDto) throws Exception {
         User user = new User();
-        List<User> existingUsers = usersRepo.findByNameAndDeleteStatus(userRequestDto.getName(), false);
+        Optional<User> existingUsers = usersRepo.findByNameAndDeleteStatus(userRequestDto.getName(), false);
         if (existingUsers.isEmpty()) {
 
             try {
@@ -143,7 +145,7 @@ public class UserService {
     }
 
     public String checkUserName(String name) {
-        if (usersRepo.findByName(name).isPresent()) {
+        if (usersRepo.findByNameAndDeleteStatus(name,false).isPresent() || usersRepo.findByNameAndDeleteStatus(name, true).isPresent()) {
             throw new EntityAlreadyExistException("User is already added");
         } else {
             return "Username is available";
@@ -160,23 +162,23 @@ public class UserService {
         }
     }
 
-    public UserResponseDto authenticateUser(String username, String password) throws AuthenticationException {
-        User existingUser = null;
-        try {
-            existingUser = usersRepo.findByNameAndDeleteStatus(username, false).get(0);
-        } catch (Exception e) {
-            throw new AuthenticationException("Authentication Failed");
-        }
-        if (existingUser != null) {
-            BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
-            if (!bcrypt.matches(password, existingUser.getPassword())) {
-                throw new AuthenticationException("Authentication Failed");
-            }
-            return getUser(existingUser.getId());
-        } else {
-            throw new AuthenticationException("Authentication Failed");
-        }
-    }
+    // public UserResponseDto authenticateUser(String username, String password) throws AuthenticationException {
+    //     User existingUser = null;
+    //     try {
+    //         existingUser = usersRepo.findByNameAndDeleteStatus(username, false).get();
+    //     } catch (Exception e) {
+    //         throw new AuthenticationException("Authentication Failed");
+    //     }
+    //     if (existingUser != null) {
+    //         BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
+    //         if (!bcrypt.matches(password, existingUser.getPassword())) {
+    //             throw new AuthenticationException("Authentication Failed");
+    //         }
+    //         return getUser(existingUser.getId());
+    //     } else {
+    //         throw new AuthenticationException("Authentication Failed");
+    //     }
+    // }
 
     public String changeUserPassword(String oldPassword, String newPassword, int userId) throws Exception {
         User user = getUserRaw(userId);
