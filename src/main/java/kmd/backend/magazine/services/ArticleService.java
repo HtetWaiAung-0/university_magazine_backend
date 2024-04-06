@@ -1,8 +1,11 @@
 package kmd.backend.magazine.services;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -29,10 +32,9 @@ public class ArticleService {
 
     public Article getArticleRaw(int articelId) {
         Article article = articlesRepo.findByIdAndDeleteStatus(articelId, false);
-        if(article!=null) {
+        if (article != null) {
             return article;
-        }
-        else {
+        } else {
             throw new EntityNotFoundException("Article");
         }
     }
@@ -42,7 +44,7 @@ public class ArticleService {
         try {
             article = getArticleRaw(articleId);
         } catch (Exception e) {
-            throw new EntityNotFoundException("Article not found!");
+            throw new EntityNotFoundException("Article");
         }
         String fileDownloadURL = commonService.fileDownloadURL("api/v1/article/file", article.getFileData(),
                 article.getFileName(), article.getId());
@@ -66,14 +68,15 @@ public class ArticleService {
 
             UserResponseDto userResponseDto = userService.getUser(article.getUser().getId());
             articelResponseDtos
-                    .add(new ArticelResponseDto(article.getId(), article.getTitle(), fileDownloadURL, coverPhotoDownloadURL,
+                    .add(new ArticelResponseDto(article.getId(), article.getTitle(), fileDownloadURL,
+                            coverPhotoDownloadURL,
                             article.getApproveStatusAsString(), article.isDeleteStatus(), article.getCreatedDate(),
                             article.getUpdatedDate(), article.getAcademicYear(), userResponseDto));
         }
         return articelResponseDtos;
     }
 
-    public List<ArticelResponseDto>getArticlesByFacultyId(int faultyId){
+    public List<ArticelResponseDto> getArticlesByFacultyId(int faultyId) {
 
         List<Article> articles = articlesRepo.findArticleByFacultyId(faultyId);
 
@@ -87,7 +90,8 @@ public class ArticleService {
 
             UserResponseDto userResponseDto = userService.getUser(article.getUser().getId());
             articleResponseDtos
-                    .add(new ArticelResponseDto(article.getId(), article.getTitle(), fileDownloadURL, coverPhotoDownloadURL,
+                    .add(new ArticelResponseDto(article.getId(), article.getTitle(), fileDownloadURL,
+                            coverPhotoDownloadURL,
                             article.getApproveStatusAsString(), article.isDeleteStatus(), article.getCreatedDate(),
                             article.getUpdatedDate(), article.getAcademicYear(), userResponseDto));
         }
@@ -95,10 +99,35 @@ public class ArticleService {
 
     }
 
+    public List<ArticelResponseDto> getArticleByName(String name) {
+        List<Article> articles = articlesRepo.findByDeleteStatusAndTitleContainingIgnoreCase(false, name);
+
+        List<ArticelResponseDto> articleResponseDtos = new ArrayList<>();
+        if (!articles.isEmpty()) {
+
+            for (Article article : articles) {
+                String fileDownloadURL = commonService.fileDownloadURL("api/v1/article/file", article.getFileData(),
+                        article.getFileName(), article.getId());
+                String coverPhotoDownloadURL = commonService.fileDownloadURL("api/v1/article/coverPhoto",
+                        article.getCoverPhotoData(),
+                        article.getCoverPhotoName(), article.getId());
+                UserResponseDto userResponseDto = userService.getUser(article.getUser().getId());
+                articleResponseDtos
+                        .add(new ArticelResponseDto(article.getId(), article.getTitle(), fileDownloadURL,
+                                coverPhotoDownloadURL,
+                                article.getApproveStatusAsString(), article.isDeleteStatus(), article.getCreatedDate(),
+                                article.getUpdatedDate(), article.getAcademicYear(), userResponseDto));
+            }
+            return articleResponseDtos;
+        }
+        {
+            throw new EntityNotFoundException("No article title name with " + name);
+        }
+    }
+
     public Article saveArticle(ArticelRequestDto articelRequestDto) throws Exception {
         Article article = new Article();
-        
-        
+
         try {
             if (!articelRequestDto.getFile().isEmpty()) {
                 @SuppressWarnings("null")
@@ -130,7 +159,6 @@ public class ArticleService {
             article.setAcademicYear(academicYearService.getAcademicYear(articelRequestDto.getAcademicYear()));
             article.setUser(userService.getUserRaw(articelRequestDto.getUser()));
 
-
             return articlesRepo.save(article);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
@@ -138,9 +166,9 @@ public class ArticleService {
     }
 
     public Article updateArticle(ArticelRequestDto articelRequestDto, int articelId) throws Exception {
-        
+
         Article existingArticle = getArticleRaw(articelId);
-    
+
         if (existingArticle != null) {
             try {
                 if (articelRequestDto.getFile() != null && !articelRequestDto.getFile().isEmpty()) {
@@ -153,7 +181,8 @@ public class ArticleService {
                     existingArticle.setFileType(articelRequestDto.getFile().getContentType());
                 }
                 if (articelRequestDto.getCoverPhoto() != null && !articelRequestDto.getCoverPhoto().isEmpty()) {
-                    String coverPhotoName = StringUtils.cleanPath(articelRequestDto.getCoverPhoto().getOriginalFilename());
+                    String coverPhotoName = StringUtils
+                            .cleanPath(articelRequestDto.getCoverPhoto().getOriginalFilename());
                     if (coverPhotoName.contains("..")) {
                         throw new Exception("Cover Photo Name contains invalid path sequence " + coverPhotoName);
                     }
@@ -165,9 +194,10 @@ public class ArticleService {
                 existingArticle.setUpdatedDate(LocalDate.now().format(formatter));
                 existingArticle.setId(articelId);
                 existingArticle.setTitle(articelRequestDto.getTitle());
-                existingArticle.setAcademicYear(academicYearService.getAcademicYear(articelRequestDto.getAcademicYear()));
+                existingArticle
+                        .setAcademicYear(academicYearService.getAcademicYear(articelRequestDto.getAcademicYear()));
                 existingArticle.setUser(userService.getUserRaw(articelRequestDto.getUser()));
-    
+
                 return articlesRepo.save(existingArticle);
             } catch (Exception e) {
                 throw new Exception(e.getMessage());
@@ -179,18 +209,19 @@ public class ArticleService {
 
     public void setApproveArticle(int articleId, Article.ApproveStatus status) throws Exception {
         try {
-            Article existingArticle = articlesRepo.findById(articleId).orElseThrow(() -> new EntityNotFoundException("Article not found!"));
+            Article existingArticle = articlesRepo.findById(articleId)
+                    .orElseThrow(() -> new EntityNotFoundException("Article not found!"));
             existingArticle.setApproveStatus(status);
             articlesRepo.save(existingArticle);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid approve status provided.");
         } catch (Exception e) {
-            throw new EntityNotFoundException("Article not found!");
+            throw new EntityNotFoundException("Article");
         }
     }
 
     public void deleteArticle(int articleId) throws Exception {
-       Article article = getArticleRaw(articleId);
+        Article article = getArticleRaw(articleId);
         if (article != null) {
             article.setDeleteStatus(true);
             articlesRepo.save(article);

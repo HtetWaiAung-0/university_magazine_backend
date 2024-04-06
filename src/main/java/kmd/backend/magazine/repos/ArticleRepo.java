@@ -1,6 +1,8 @@
 package kmd.backend.magazine.repos;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,7 +14,7 @@ public interface ArticleRepo extends JpaRepository<Article, Integer> {
     Article findByIdAndDeleteStatus(int articleId, boolean deleteStatus);
 
     List<Article> findByDeleteStatus(boolean deleteStatus);
-
+    List<Article> findByDeleteStatusAndTitleContainingIgnoreCase(boolean deleteStatus, String title);
 
     @Query(value = "select a.* from article a\r\n" + //
                 "inner join users u on a.user_id = u.id\r\n" + //
