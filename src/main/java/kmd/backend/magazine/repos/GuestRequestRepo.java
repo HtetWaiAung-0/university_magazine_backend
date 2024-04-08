@@ -9,4 +9,5 @@ import java.util.List;
 public interface GuestRequestRepo extends JpaRepository<GuestRequest, Integer> {
     List<GuestRequest> findByStatusAndEmail(GuestRequest.Status status, String email);
     List<GuestRequest> findByStatus(GuestRequest.Status status);
+    List<GuestRequest> findByUserIdAndStatusAndStatusDate(int userId, GuestRequest.Status status, String createdDate);
 }

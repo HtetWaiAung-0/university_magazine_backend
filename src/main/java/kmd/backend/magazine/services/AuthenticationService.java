@@ -3,22 +3,16 @@ package kmd.backend.magazine.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import kmd.backend.magazine.dtos.AuthenticationResponse;
-import kmd.backend.magazine.dtos.UserRequestDto;
-import kmd.backend.magazine.exceptions.EntityAlreadyExistException;
-import kmd.backend.magazine.models.Faculty;
 import kmd.backend.magazine.models.Token;
 import kmd.backend.magazine.models.User;
 import kmd.backend.magazine.repos.TokenRepository;
 import kmd.backend.magazine.repos.UserRepo;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AuthenticationService {
@@ -55,7 +49,7 @@ public class AuthenticationService {
                 new UsernamePasswordAuthenticationToken(
                         username,
                         password));
-
+        System.out.println("Arrive here");
         User user = repository.findByNameAndDeleteStatus(username,false).orElseThrow();
         String jwt = jwtService.generateToken(user);
 

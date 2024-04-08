@@ -13,7 +13,6 @@ import kmd.backend.magazine.dtos.UserRequestDto;
 import kmd.backend.magazine.dtos.UserResponseDto;
 import kmd.backend.magazine.exceptions.EntityAlreadyExistException;
 import kmd.backend.magazine.exceptions.EntityNotFoundException;
-import kmd.backend.magazine.models.Article;
 import kmd.backend.magazine.models.User;
 import kmd.backend.magazine.repos.UserRepo;
 
@@ -121,10 +120,13 @@ public class UserService {
                         throw new Exception("Filename contains invalid path sequence "
                                 + fileName);
                     }
+                    
+                    
                     user.setProfilePhotoData(userRequestDto.getProfilePhoto().getBytes());
                     user.setProfilePhotoName(fileName);
                     user.setProfilePhotoType(userRequestDto.getProfilePhoto().getContentType());
                 }
+                user.setEmail(userRequestDto.getEmail());
                 user.setName(userRequestDto.getName());
                 user.setRole(User.Role.valueOf(userRequestDto.getRole()));
                 if (userRequestDto.getFaculty() != 0) {
@@ -161,24 +163,6 @@ public class UserService {
             throw new EntityNotFoundException("User");
         }
     }
-
-    // public UserResponseDto authenticateUser(String username, String password) throws AuthenticationException {
-    //     User existingUser = null;
-    //     try {
-    //         existingUser = usersRepo.findByNameAndDeleteStatus(username, false).get();
-    //     } catch (Exception e) {
-    //         throw new AuthenticationException("Authentication Failed");
-    //     }
-    //     if (existingUser != null) {
-    //         BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
-    //         if (!bcrypt.matches(password, existingUser.getPassword())) {
-    //             throw new AuthenticationException("Authentication Failed");
-    //         }
-    //         return getUser(existingUser.getId());
-    //     } else {
-    //         throw new AuthenticationException("Authentication Failed");
-    //     }
-    // }
 
     public String changeUserPassword(String oldPassword, String newPassword, int userId) throws Exception {
         User user = getUserRaw(userId);

@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import kmd.backend.magazine.dtos.ArticelResponseDto;
 import kmd.backend.magazine.dtos.UserResponseDto;
 import kmd.backend.magazine.exceptions.EntityNotFoundException;
 import kmd.backend.magazine.models.Article;
-import kmd.backend.magazine.models.Faculty;
 import kmd.backend.magazine.repos.ArticleRepo;
 
 @Service
@@ -27,8 +25,6 @@ public class ArticleService {
     private UserService userService;
     @Autowired
     private AcademicYearService academicYearService;
-    @Autowired
-    private FacultyService facultyService;
 
     public Article getArticleRaw(int articelId) {
         Article article = articlesRepo.findByIdAndDeleteStatus(articelId, false);

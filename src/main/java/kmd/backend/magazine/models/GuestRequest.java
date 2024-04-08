@@ -7,7 +7,6 @@ import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import jakarta.persistence.Table;
 
@@ -16,7 +15,6 @@ import jakarta.persistence.Table;
 @Setter
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class GuestRequest extends BaseEntity{
 
@@ -31,10 +29,22 @@ public class GuestRequest extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    public String getRoleAsString() {
-        return status != null ? status.name() : null;
+    public GuestRequest() {
+        this.status = Status.PENDING; // Set default value to PENDING
     }
 
+    @Column(name = "status_date", nullable = true)
+    private String statusDate;
+
+    public String getStatusAsString() {
+        return status != null ? status.name() : null;
+    }
+    
     @Column(name = "faculty_id", nullable = false)
-    private int faculty;
+    private int facultyId;
+
+    @Column(name = "user_id", nullable = true)
+    private int userId;
+
+    
 }

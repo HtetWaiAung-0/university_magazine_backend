@@ -40,6 +40,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestParam("username") String username, @RequestParam("password") String password)
             throws AuthenticationException {
+                System.out.println("here is +++++++++++++++"+password);
         return ResponseEntity.ok().body(authenticationService.authenticate(username, password));
     }
 

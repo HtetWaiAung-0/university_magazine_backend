@@ -8,7 +8,6 @@ import kmd.backend.magazine.dtos.UserResponseDto;
 import kmd.backend.magazine.exceptions.EntityNotFoundException;
 import kmd.backend.magazine.models.Article;
 import kmd.backend.magazine.models.Comment;
-import kmd.backend.magazine.repos.ArticleRepo;
 import kmd.backend.magazine.repos.CommentRepo;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

@@ -27,7 +27,7 @@ public class SchedularTask {
     @Scheduled(cron = "0 0 7 * * *")
     public void NotifyMailSender() {
         try {
-            emailService.sendEmail();
+            emailService.sendEmailForNotApproveArticle();
             System.out.println("Email sent successfully");
         } catch (MessagingException e) {
             System.out.println(e.getMessage());

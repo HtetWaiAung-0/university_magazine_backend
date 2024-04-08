@@ -32,10 +32,10 @@ public class EmailService {
     @Autowired
     private FacultyRepo facultyRepo;
 
-    public void sendEmail() throws MessagingException {
+    public void sendEmailForNotApproveArticle() throws MessagingException {
 
         List<Article> articles = articleRepo.findArticleByApproveStatus(Article.ApproveStatus.PENDING);
-        System.out.println("article size == "+articles.size());
+        System.out.println("article size == " + articles.size());
         for (Article article : articles) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
             LocalDate createDate = LocalDate.parse(article.getCreatedDate(), formatter);
@@ -64,7 +64,7 @@ public class EmailService {
                     }
                 }
 
-            }else{
+            } else {
                 System.out.println("out of condition");
             }
 
@@ -82,6 +82,25 @@ public class EmailService {
         // // message.setSubject("This is testing.");
         // // message.setText("Testing mail sent by pekar.");
         // javaMailSender.send(message);
+    }
+
+    public void sendEmailForCreatedGuestAcc(User user, String password) throws MessagingException {
+
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setFrom("MagazineApp <hwaung1@kmd.edu.mm>");
+
+        if (user.getEmail() != null) {
+            helper.setTo(user.getEmail());
+            helper.setSubject("Approved Guest Account");
+            helper.setText(
+                    "Your account has been created. \n UserName => " + user.getName() + "\n Password => " + password);
+            javaMailSender.send(message);
+        } else {
+            System.out.println("email is null");
+            throw new MessagingException();
+        }
+
     }
 
 }

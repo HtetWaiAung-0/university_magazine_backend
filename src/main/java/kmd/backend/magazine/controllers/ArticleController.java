@@ -3,7 +3,6 @@ package kmd.backend.magazine.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,11 +31,11 @@ public class ArticleController {
     @Autowired
     private EmailService emailService;
 
-    @GetMapping("/mail")
-    public ResponseEntity<?> getArticle() throws MessagingException {
-        emailService.sendEmail();
-        return ResponseEntity.ok().body("Article sent");
-    }
+    // @GetMapping("/mail")
+    // public ResponseEntity<?> getArticle() throws MessagingException {
+    //     emailService.sendEmailForNotApproveArticle();
+    //     return ResponseEntity.ok().body("Article sent");
+    // }
     @GetMapping()
     public ResponseEntity<?> getAllArticles() {
         return ResponseEntity.ok().body(articleService.getAllArticles());
