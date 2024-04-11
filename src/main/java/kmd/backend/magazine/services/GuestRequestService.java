@@ -3,10 +3,8 @@ package kmd.backend.magazine.services;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import kmd.backend.magazine.dtos.UserRequestDto;
@@ -20,13 +18,17 @@ public class GuestRequestService {
     private GuestRequestRepo guestRequestRepo;
 
     @Autowired
+    private CommonService commonService;
+
+    @Autowired
     private UserService userService;
 
     @Autowired
     private EmailService emailService;
 
     public GuestRequest saveGuestRequest(GuestRequest guestRequest) throws Exception {
-        if(guestRequestRepo.findByStatusAndEmail(GuestRequest.Status.valueOf("PENDING"), guestRequest.getEmail()).size() > 0) {
+        if (guestRequestRepo.findByStatusAndEmail(GuestRequest.Status.valueOf("PENDING"), guestRequest.getEmail())
+                .size() > 0) {
             throw new Exception("Email already exist!");
         }
 
@@ -39,7 +41,7 @@ public class GuestRequestService {
             e.printStackTrace();
             throw new Exception("Guest Register Fail!");
         }
-    
+
     }
 
     public List<GuestRequest> getAllGuestRequests() throws Exception {
@@ -49,23 +51,11 @@ public class GuestRequestService {
             e.printStackTrace();
             throw new Exception("Get Guest Request Fail!");
         }
-        
-    }
 
-    public static String generateRandomWord(int length) {
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        StringBuilder sb = new StringBuilder(length);
-        Random random = new Random();
-        for (int i = 0; i < length; i++) {
-            int index = random.nextInt(characters.length());
-            sb.append(characters.charAt(index));
-        }
-        return sb.toString();
     }
 
     public void approveGuestRequest(int guestRequestId) throws Exception {
 
-        
         try {
             GuestRequest guestRequest = guestRequestRepo.findById(guestRequestId).get();
             UserRequestDto userRequestDto = new UserRequestDto();
@@ -73,11 +63,11 @@ public class GuestRequestService {
             userRequestDto.setEmail(guestRequest.getEmail());
             userRequestDto.setName(guestRequest.getEmail().split("@")[0]);
             userRequestDto.setRole("GUEST");
-            String randomWord = generateRandomWord(6);
+            String randomWord = commonService.generateRandomWord(10);
             userRequestDto.setPassword(randomWord);
             userRequestDto.setFaculty(guestRequest.getFacultyId());
 
-            //Save user in user table
+            // Save user in user table
             User user = userService.saveUser(userRequestDto);
             guestRequest.setUserId(user.getId());
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -91,8 +81,6 @@ public class GuestRequestService {
             throw new Exception("Approve Guest Request Fail!");
         }
 
-        
-
     }
 
     public void rejectGuestRequest(int guestRequestId) throws Exception {
@@ -105,7 +93,31 @@ public class GuestRequestService {
             throw new Exception("Reject Guest Request Fail!");
         }
     }
-    
 
+    public void checkExpriedGuestAccount() throws Exception {
+        try {
+            List<GuestRequest> guestRequests = guestRequestRepo.findByStatus(GuestRequest.Status.valueOf("ACTIVE"));
+            for (GuestRequest guestRequest : guestRequests) {
+                if (guestRequest.getStatusDate()
+                        .compareTo(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))) < 14) {
+                    guestRequest.setStatus(GuestRequest.Status.valueOf("EXPIRED"));
+                    guestRequest.setStatusDate(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+                    guestRequestRepo.save(guestRequest);
+                    try {
+                        userService.deleteUser(guestRequest.getUserId());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new Exception("User delete Fail!");
+                    }
+                    emailService.sendEmail(guestRequest.getEmail(), "Guest Account Expired Notification",
+                            "Your guest Account<" + guestRequest.getEmail() + ">for Magazine is expired.");
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception("Set Guest Expired Fail!");
+        }
+    }
 
 }

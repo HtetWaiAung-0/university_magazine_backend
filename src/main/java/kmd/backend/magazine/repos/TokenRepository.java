@@ -17,5 +17,7 @@ where t.user.id = :userId and t.loggedOut = false
 """)
     List<Token> findAllTokensByUser(Integer userId);
 
+    List<Token> findByUserId(int userId);
+
     Optional<Token> findByToken(String token);
 }

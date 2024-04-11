@@ -16,11 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.mail.MessagingException;
 import kmd.backend.magazine.dtos.ArticelRequestDto;
 import kmd.backend.magazine.models.Article;
 import kmd.backend.magazine.services.ArticleService;
-import kmd.backend.magazine.services.EmailService;
 
 @RestController
 @RequestMapping("/api/v1/article")
@@ -28,14 +26,6 @@ public class ArticleController {
     @Autowired
     private ArticleService articleService;
 
-    @Autowired
-    private EmailService emailService;
-
-    // @GetMapping("/mail")
-    // public ResponseEntity<?> getArticle() throws MessagingException {
-    //     emailService.sendEmailForNotApproveArticle();
-    //     return ResponseEntity.ok().body("Article sent");
-    // }
     @GetMapping()
     public ResponseEntity<?> getAllArticles() {
         return ResponseEntity.ok().body(articleService.getAllArticles());
@@ -60,7 +50,7 @@ public class ArticleController {
     @PostMapping("/update/{articleId}")
     public ResponseEntity<?> updateArticle(@ModelAttribute ArticelRequestDto articelRequestDto,
             @PathVariable int articleId) throws Exception {
-        articleService.updateArticle(articelRequestDto,articleId);
+        articleService.updateArticle(articelRequestDto, articleId);
         return ResponseEntity.ok().body("Article updated");
     }
 
@@ -98,9 +88,8 @@ public class ArticleController {
                 .body(new ByteArrayResource(article.getCoverPhotoData()));
     }
 
-  
     @DeleteMapping("/{articleId}")
-    public ResponseEntity<?> deleteArticle(@PathVariable int articleId)throws Exception {
+    public ResponseEntity<?> deleteArticle(@PathVariable int articleId) throws Exception {
         articleService.deleteArticle(articleId);
         return ResponseEntity.ok().body("Article deleted");
     }

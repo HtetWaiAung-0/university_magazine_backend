@@ -1,4 +1,5 @@
 package kmd.backend.magazine.controllers;
+
 import org.springframework.web.bind.annotation.RestController;
 import kmd.backend.magazine.dtos.FacultyRequestDto;
 import kmd.backend.magazine.services.FacultyService;
@@ -21,7 +22,7 @@ public class FacultyController {
 
     @GetMapping
     public ResponseEntity<?> getAllFaculties() {
-        return ResponseEntity.ok().body(facultyService.getAllgetFaculties());
+        return ResponseEntity.ok().body(facultyService.getAllFaculties());
     }
 
     @PostMapping("/add")
@@ -42,7 +43,8 @@ public class FacultyController {
     }
 
     @PostMapping("/update/{facultyId}")
-    public ResponseEntity<?> updateFaculty(@ModelAttribute FacultyRequestDto facultyRequestDto, @PathVariable int facultyId) throws Exception {
+    public ResponseEntity<?> updateFaculty(@ModelAttribute FacultyRequestDto facultyRequestDto,
+            @PathVariable int facultyId) throws Exception {
         facultyService.updateFaculty(facultyRequestDto, facultyId);
         return ResponseEntity.ok().body("Faculty Updated!");
     }

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
-
 import kmd.backend.magazine.dtos.UserRequestDto;
 import kmd.backend.magazine.models.User;
 import kmd.backend.magazine.services.AuthenticationService;
@@ -40,16 +39,22 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestParam("username") String username, @RequestParam("password") String password)
             throws AuthenticationException {
-                System.out.println("here is +++++++++++++++"+password);
+        System.out.println("here is +++++++++++++++" + password);
         return ResponseEntity.ok().body(authenticationService.authenticate(username, password));
     }
 
-    @PostMapping("/changepassword/{id}")
+    @PostMapping("/changePassword/{id}")
     public ResponseEntity<?> changePassword(@PathVariable int id,
             @RequestParam("password") String password, @RequestParam("newPassword") String newPassword)
             throws Exception {
         userService.changeUserPassword(password, newPassword, id);
         return ResponseEntity.ok().body("Password changed");
+    }
+
+    @PostMapping("/forgetPassword")
+    public ResponseEntity<?> forgetPassword(@RequestParam("email") String email) throws Exception {
+        userService.forgetPassword(email);
+        return ResponseEntity.ok().body("Your password has been changed. Please check your email.");
     }
 
     @GetMapping("/checkusername")
@@ -76,7 +81,8 @@ public class UserController {
     }
 
     @PostMapping("/update/{userId}")
-    public ResponseEntity<?> updateUser(@ModelAttribute UserRequestDto userRequestDto, @PathVariable int userId) throws Exception {
+    public ResponseEntity<?> updateUser(@ModelAttribute UserRequestDto userRequestDto, @PathVariable int userId)
+            throws Exception {
         userService.updateUser(userRequestDto, userId);
         return ResponseEntity.ok().body("User Updated!");
     }

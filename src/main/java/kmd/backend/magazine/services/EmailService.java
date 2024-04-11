@@ -35,70 +35,55 @@ public class EmailService {
     public void sendEmailForNotApproveArticle() throws MessagingException {
 
         List<Article> articles = articleRepo.findArticleByApproveStatus(Article.ApproveStatus.PENDING);
-        System.out.println("article size == " + articles.size());
         for (Article article : articles) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
             LocalDate createDate = LocalDate.parse(article.getCreatedDate(), formatter);
             if (article.getComment().isEmpty() &&
                     (LocalDate.now().isAfter(createDate.plusDays(14)))) {
 
-                // MimeMessage msg = javaMailSender.createMimeMessage();
-                // SimpleMailMessage message = new SimpleMailMessage();
-                MimeMessage message = javaMailSender.createMimeMessage();
-                MimeMessageHelper helper = new MimeMessageHelper(message, true);
-
-                // Set the sender address and display name
-                helper.setFrom("MagazineApp <hwaung1@kmd.edu.mm>");
                 List<Faculty> faculties = facultyRepo.findFacultyByUserId(article.getUser().getId());
                 for (Faculty faculty : faculties) {
                     List<User> users = userRepo.findCoordinatorUserByFacultyId(faculty.getId());
 
                     for (User user : users) {
                         if (user.getEmail() != null) {
-                            helper.setTo(user.getEmail());
-                            helper.setSubject("Article Pending for Approval");
-                            helper.setText("This is the notify mail for article pending for approval with title : "
-                                    + article.getTitle());
-                            javaMailSender.send(message);
+                            sendEmail(user.getEmail(), "Article Pending for Approval",
+                                    "This is the notify mail for article pending for approval with title : "
+                                            + article.getTitle());
                         }
                     }
                 }
 
-            } else {
-                System.out.println("out of condition");
             }
 
         }
-        // // SimpleMailMessage message = new SimpleMailMessage();
-        // MimeMessage message = javaMailSender.createMimeMessage();
-        // MimeMessageHelper helper = new MimeMessageHelper(message, true);
-
-        // // Set the sender address and display name
-        // helper.setFrom("MagazineApp <hwaung1@kmd.edu.mm>");
-        // helper.setTo("pekarlay162@gmail.com");
-        // helper.setSubject("This is testing.");
-        // helper.setText("Testing mail sent by pekar.");
-        // // message.setTo("pekarlay162@gmail.com");
-        // // message.setSubject("This is testing.");
-        // // message.setText("Testing mail sent by pekar.");
-        // javaMailSender.send(message);
     }
 
     public void sendEmailForCreatedGuestAcc(User user, String password) throws MessagingException {
-
-        MimeMessage message = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        helper.setFrom("MagazineApp <hwaung1@kmd.edu.mm>");
+        String subject = "Approved Guest Account";
+        String text = "Your account has been created. \n UserName => " + user.getName() + "\n Password => " + password;
 
         if (user.getEmail() != null) {
-            helper.setTo(user.getEmail());
-            helper.setSubject("Approved Guest Account");
-            helper.setText(
-                    "Your account has been created. \n UserName => " + user.getName() + "\n Password => " + password);
+            sendEmail(user.getEmail(), subject, text);
+        } else {
+            throw new MessagingException();
+        }
+
+    }
+
+
+    public void sendEmail(String toMail, String subject, String text) throws MessagingException {
+
+        if (!toMail.isEmpty() && !subject.isEmpty() && !text.isEmpty()) {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setFrom("MagazineApp <hwaung1@kmd.edu.mm>");
+            helper.setTo(toMail);
+            helper.setSubject(subject);
+            helper.setText(text);
             javaMailSender.send(message);
         } else {
-            System.out.println("email is null");
-            throw new MessagingException();
+            throw new MessagingException("Mail sent error! Some parameter is missing!");
         }
 
     }

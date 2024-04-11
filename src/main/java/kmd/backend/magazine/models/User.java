@@ -45,7 +45,7 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "password", length = 255, nullable = false)
     private String password;
 
-    @Column(name = "email", length = 255, nullable = true, unique = true)
+    @Column(name = "email", length = 255, nullable = false, unique = true)
     private String email;
 
     @Column(name = "delete_status", columnDefinition = "BOOLEAN DEFAULT false")

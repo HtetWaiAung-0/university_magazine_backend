@@ -17,9 +17,9 @@ public class FacultyService {
     @Autowired
     private FacultyRepo facultyRepo;
 
-    public List<FacultyResponseDto> getAllgetFaculties() {
+    public List<FacultyResponseDto> getAllFaculties() {
         List<FacultyResponseDto> facultyDtos = new ArrayList<>();
-        for (Faculty faculty : facultyRepo.findAll()) {
+        for (Faculty faculty : facultyRepo.findAllFaculties()) {
             facultyDtos.add(new FacultyResponseDto(faculty.getId(), faculty.getName()));
         }
         return facultyDtos;

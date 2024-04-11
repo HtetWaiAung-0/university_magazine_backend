@@ -6,31 +6,33 @@ import org.springframework.stereotype.Component;
 
 import jakarta.mail.MessagingException;
 import kmd.backend.magazine.services.EmailService;
+import kmd.backend.magazine.services.GuestRequestService;
 
 @Component
 public class SchedularTask {
 
     @Autowired
     private EmailService emailService;
-
-    // @Scheduled(fixedRate = 50000) // Execute every 5 seconds
-    // public void task1() {
-    //     try {
-    //         emailService.sendEmail();
-    //         System.out.println("Email sent successfully");
-    //     } catch (MessagingException e) {
-    //         // TODO Auto-generated catch block
-    //         e.printStackTrace();
-    //     }
-    // }
+    @Autowired
+    private GuestRequestService guestRequestService;
 
     @Scheduled(cron = "0 0 7 * * *")
     public void NotifyMailSender() {
         try {
             emailService.sendEmailForNotApproveArticle();
-            System.out.println("Email sent successfully");
         } catch (MessagingException e) {
             System.out.println(e.getMessage());
         }
     }
+
+    @Scheduled(cron = "0 0 7 * * *")
+    public void checkExpriedGuestAccount() throws Exception {
+        try {
+            guestRequestService.checkExpriedGuestAccount();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Check expried guest account fail");
+        }
+    }
+
 }

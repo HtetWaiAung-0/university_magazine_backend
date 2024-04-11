@@ -13,4 +13,8 @@ public interface FacultyRepo extends JpaRepository<Faculty, Integer> {
     @Query(value = "select f.* from faculty f\n" + //
             "inner join users u on f.id = u.faculty_id where u.id = :userId", nativeQuery = true)
     List<Faculty> findFacultyByUserId(@Param("userId") int userId);
+
+    @Query(value = "select * from faculty where delete_status = false", nativeQuery = true)
+    List<Faculty> findAllFaculties();
+
 }

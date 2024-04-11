@@ -13,7 +13,6 @@ import kmd.backend.magazine.services.GuestRequestService;
 
 import org.springframework.web.bind.annotation.PostMapping;
 
-
 @RestController
 @RequestMapping("/api/v1/guest")
 public class GuestRequestController {
@@ -21,7 +20,6 @@ public class GuestRequestController {
     @Autowired
     private GuestRequestService guestRequestService;
 
-    
     @GetMapping()
     public String getGuestRequest() {
         return "Guest Request";
@@ -38,5 +36,5 @@ public class GuestRequestController {
         guestRequestService.approveGuestRequest(guestRequestId);
         return ResponseEntity.ok().body("Guest Request Approve Success.");
     }
-    
+
 }

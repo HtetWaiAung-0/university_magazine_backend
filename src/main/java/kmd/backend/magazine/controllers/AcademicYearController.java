@@ -36,7 +36,8 @@ public class AcademicYearController {
     }
 
     @PostMapping("/update/{academicYearId}")
-    public ResponseEntity<?> updateAcademicYear(@PathVariable int academicYearId, @ModelAttribute AcademicYear academicYear) {
+    public ResponseEntity<?> updateAcademicYear(@PathVariable int academicYearId,
+            @ModelAttribute AcademicYear academicYear) {
         academicYearService.updatAcademicYear(academicYearId, academicYear);
         return ResponseEntity.ok().body("Academic Year updated");
     }

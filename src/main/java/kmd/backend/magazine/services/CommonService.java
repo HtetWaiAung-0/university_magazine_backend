@@ -1,36 +1,24 @@
 package kmd.backend.magazine.services;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.util.Random;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 
 @Service
 public class CommonService {
 
-    public void fileLocalUpload(MultipartFile file, String fileType, int id) throws IOException {
-        String uploadDir = "assets/" + fileType + "/" + id + "/";
-        Path uploadPath = Paths.get(uploadDir);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
+    public String generateRandomWord(int length) {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder sb = new StringBuilder(length);
+        Random random = new Random();
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(characters.length());
+            sb.append(characters.charAt(index));
         }
-        InputStream inputStream = file.getInputStream();
-        System.out.println(inputStream);
-        if (!file.isEmpty()) {
-            Path filePath = uploadPath.resolve(file.getOriginalFilename());
-            System.out.println(filePath.toFile().getAbsolutePath());
-            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-        }
+        return sb.toString();
     }
-
-    
 
     public String fileDownloadURL(String baseMapping,byte[] fileData,String fileName,int id) {
         if (fileData != null && fileData.length > 0

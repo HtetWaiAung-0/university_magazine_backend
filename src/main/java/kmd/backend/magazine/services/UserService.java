@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import jakarta.mail.MessagingException;
 import kmd.backend.magazine.dtos.UserRequestDto;
 import kmd.backend.magazine.dtos.UserResponseDto;
 import kmd.backend.magazine.exceptions.EntityAlreadyExistException;
@@ -25,6 +27,8 @@ public class UserService {
     CommonService commonService;
 
     @Autowired
+    EmailService emailService;
+    @Autowired
     private FacultyService facultyService;
 
     public List<UserResponseDto> getAllUsers() {
@@ -32,13 +36,17 @@ public class UserService {
         for (User user : usersRepo.findByDeleteStatus(false)) {
             String downloadURL = commonService.fileDownloadURL("api/v1/user/profilePhoto", user.getProfilePhotoData(),
                     user.getProfilePhotoName(), user.getId());
-            userDtos.add(new UserResponseDto(user.getId(), user.getName(), user.getRoleAsString(),user.getEmail(), downloadURL,
+            userDtos.add(new UserResponseDto(user.getId(), user.getName(), user.getRoleAsString(), user.getEmail(),
+                    downloadURL,
                     user.isDeleteStatus(),
                     user.getFaculty()));
         }
         return userDtos;
     }
 
+    public List<User> getUsersByFacultyId(int facultyId) {
+        return usersRepo.findUsersByFacultyId(facultyId);
+    }
     public UserResponseDto getUser(int userId) {
         User user = new User();
         try {
@@ -48,7 +56,8 @@ public class UserService {
         }
         String downloadURL = commonService.fileDownloadURL("api/v1/user/profilePhoto", user.getProfilePhotoData(),
                 user.getProfilePhotoName(), user.getId());
-        return new UserResponseDto(user.getId(), user.getName(), user.getRole().toString(),user.getEmail(), downloadURL,
+        return new UserResponseDto(user.getId(), user.getName(), user.getRole().toString(), user.getEmail(),
+                downloadURL,
                 user.isDeleteStatus(),
                 user.getFaculty());
     }
@@ -120,8 +129,7 @@ public class UserService {
                         throw new Exception("Filename contains invalid path sequence "
                                 + fileName);
                     }
-                    
-                    
+
                     user.setProfilePhotoData(userRequestDto.getProfilePhoto().getBytes());
                     user.setProfilePhotoName(fileName);
                     user.setProfilePhotoType(userRequestDto.getProfilePhoto().getContentType());
@@ -147,7 +155,8 @@ public class UserService {
     }
 
     public String checkUserName(String name) {
-        if (usersRepo.findByNameAndDeleteStatus(name,false).isPresent() || usersRepo.findByNameAndDeleteStatus(name, true).isPresent()) {
+        if (usersRepo.findByNameAndDeleteStatus(name, false).isPresent()
+                || usersRepo.findByNameAndDeleteStatus(name, true).isPresent()) {
             throw new EntityAlreadyExistException("User is already added");
         } else {
             return "Username is available";
@@ -181,6 +190,26 @@ public class UserService {
         } else {
             throw new EntityNotFoundException("User Not Found");
         }
+    }
+
+    public void forgetPassword(String email) throws MessagingException {
+        User user = usersRepo.findByEmailAndDeleteStatus(email, false);
+        if (user != null) {
+            String newPassword = commonService.generateRandomWord(10);
+            user.setPassword(new BCryptPasswordEncoder().encode(newPassword));
+            usersRepo.save(user);
+
+            emailService.sendEmail(email, "User Password Reset for Magazine App",
+                    "Your password have been restart. \n Please change the password in 24 hours. \n Your new password is: "
+                            + newPassword);
+        } else {
+            throw new EntityNotFoundException("User");
+        }
+    }
+
+    public void deleteUser(int userId) {
+        User user = getUserRaw(userId);
+        usersRepo.delete(user);
     }
 
 }
