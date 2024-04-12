@@ -20,9 +20,9 @@ public class GuestRequestController {
     @Autowired
     private GuestRequestService guestRequestService;
 
-    @GetMapping()
-    public String getGuestRequest() {
-        return "Guest Request";
+    @GetMapping("/all")
+    public ResponseEntity<?> getGuestRequest() throws Exception {
+        return ResponseEntity.ok().body(guestRequestService.getAllGuestRequests());
     }
 
     @PostMapping("/register")
@@ -35,6 +35,12 @@ public class GuestRequestController {
     public ResponseEntity<?> guestApprove(@PathVariable int guestRequestId) throws Exception {
         guestRequestService.approveGuestRequest(guestRequestId);
         return ResponseEntity.ok().body("Guest Request Approve Success.");
+    }
+
+    @PostMapping("/reject/{guestRequestId}")
+    public ResponseEntity<?> guestReject(@PathVariable int guestRequestId) throws Exception {
+        guestRequestService.rejectGuestRequest(guestRequestId);
+        return ResponseEntity.ok().body("Guest Request Reject Success.");
     }
 
 }
