@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CommentService {
@@ -62,7 +63,7 @@ public class CommentService {
     }
 
     public Comment updateComment(CommentRequestDto cmtResqDto, int id) {
-        Comment exitingCmt = commentRepo.findById(id).get();
+        Comment exitingCmt = commentRepo.findById(id);
         if (exitingCmt == null) {
             throw new EntityNotFoundException("Comment");
         }
@@ -72,11 +73,14 @@ public class CommentService {
     }
 
     public void deleteComment(int id) {
-        Comment exitingCmt = commentRepo.findById(id).get();
-        if (exitingCmt == null) {
-            throw new EntityNotFoundException("Comment");
+        try {
+            Comment existingCmt = commentRepo.findById(id);
+            System.out.println(existingCmt.toString());
+            commentRepo.deleteById(existingCmt.getId());
+        } catch (Exception e) {
+            // Log the exception for debugging
+            e.printStackTrace();
+            throw new EntityNotFoundException("Failed to delete Comment");
         }
-        commentRepo.delete(exitingCmt);
     }
-
 }

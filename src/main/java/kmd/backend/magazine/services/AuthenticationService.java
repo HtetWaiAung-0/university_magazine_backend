@@ -49,7 +49,6 @@ public class AuthenticationService {
                 new UsernamePasswordAuthenticationToken(
                         username,
                         password));
-        System.out.println("Arrive here");
         User user = repository.findByNameAndDeleteStatus(username,false).orElseThrow();
         String jwt = jwtService.generateToken(user);
 
