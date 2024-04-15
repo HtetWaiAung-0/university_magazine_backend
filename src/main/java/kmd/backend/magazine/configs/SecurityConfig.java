@@ -47,7 +47,8 @@ public class SecurityConfig {
                                                                 "api/v1/user/profilePhoto/**", "api/v1/article/file/**",
                                                                 "api/v1/article/coverPhoto/**",
                                                                 "api/v1/guest/register",
-                                                                "api/v1/user/forgetPassword").permitAll()
+                                                                "api/v1/user/forgetPassword",
+                                                                "api/v1/faculty").permitAll()
                                                                 .requestMatchers("api/v1/**")
                                                                 .hasAnyAuthority("ADMIN", "STUDENT", "MANAGER",
                                                                                 "COORDINATOR", "GUEST")
