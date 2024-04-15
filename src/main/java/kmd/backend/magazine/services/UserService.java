@@ -141,7 +141,11 @@ public class UserService {
                     user.setProfilePhotoName(fileName);
                     user.setProfilePhotoType(userRequestDto.getProfilePhoto().getContentType());
                 }
-                user.setEmail(userRequestDto.getEmail());
+                if(usersRepo.findByEmailAndDeleteStatus(userRequestDto.getEmail(), false)==null){
+                    user.setEmail(userRequestDto.getEmail());
+                }else{
+                    throw new EntityAlreadyExistException("Email");
+                }
                 user.setName(userRequestDto.getName());
                 user.setRole(User.Role.valueOf(userRequestDto.getRole()));
                 if (userRequestDto.getFaculty() != 0) {
