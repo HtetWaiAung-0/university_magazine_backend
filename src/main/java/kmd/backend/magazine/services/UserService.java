@@ -108,9 +108,10 @@ public class UserService {
                 user.setEmail(userRequestDto.getEmail());
                 user.setName(userRequestDto.getName());
                 user.setRole(User.Role.valueOf(userRequestDto.getRole()));
-                if (userRequestDto.getFaculty() == 0) {
-                    user.setFaculty(null);
-                } else {
+               // if (userRequestDto.getFaculty()) {
+                //     user.setFaculty(null);
+                // } else 
+                if(userRequestDto.getFaculty() != 0) {
                     user.setFaculty(facultyService.getFacultyById(userRequestDto.getFaculty()));
                 }
                 User updatedUser = usersRepo.save(user);
