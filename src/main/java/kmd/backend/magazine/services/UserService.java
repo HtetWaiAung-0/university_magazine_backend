@@ -84,7 +84,7 @@ public class UserService {
         usersRepo.save(user);
     }
 
-    public User updateUser(UserRequestDto userRequestDto, int userId) throws Exception {
+    public UserResponseDto updateUser(UserRequestDto userRequestDto, int userId) throws Exception {
         User user = getUserRaw(userId);
         if (user != null) {
 
@@ -108,12 +108,13 @@ public class UserService {
                 user.setEmail(userRequestDto.getEmail());
                 user.setName(userRequestDto.getName());
                 user.setRole(User.Role.valueOf(userRequestDto.getRole()));
-                if (userRequestDto.getFaculty() != 0) {
-                    user.setFaculty(facultyService.getFacultyById(userRequestDto.getFaculty()));
-                } else {
+                if (userRequestDto.getFaculty() == 0) {
                     user.setFaculty(null);
+                } else {
+                    user.setFaculty(facultyService.getFacultyById(userRequestDto.getFaculty()));
                 }
-                return usersRepo.save(user);
+                User updatedUser = usersRepo.save(user);
+                return getUser(updatedUser.getId());
             } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException("Invalid role provided.");
             } catch (Exception e) {
