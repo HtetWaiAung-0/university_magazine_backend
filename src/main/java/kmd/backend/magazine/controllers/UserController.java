@@ -82,8 +82,8 @@ public class UserController {
     @PostMapping("/update/{userId}")
     public ResponseEntity<?> updateUser(@ModelAttribute UserRequestDto userRequestDto, @PathVariable int userId)
             throws Exception {
-        userService.updateUser(userRequestDto, userId);
-        return ResponseEntity.ok().body("User Updated!");
+        
+        return ResponseEntity.ok().body(userService.updateUser(userRequestDto, userId));
     }
 
     @DeleteMapping("/delete/profilePhoto/{userId}")
