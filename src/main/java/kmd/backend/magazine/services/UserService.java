@@ -47,6 +47,7 @@ public class UserService {
     public List<User> getUsersByFacultyId(int facultyId) {
         return usersRepo.findUsersByFacultyId(facultyId);
     }
+
     public UserResponseDto getUser(int userId) {
         User user = new User();
         try {
@@ -99,19 +100,15 @@ public class UserService {
                     user.setProfilePhotoName(fileName);
                     user.setProfilePhotoType(userRequestDto.getProfilePhoto().getContentType());
                 }
-                if(usersRepo.findByEmailAndDeleteStatus(userRequestDto.getEmail(), false)==null){
-                    user.setEmail(userRequestDto.getEmail());
-                }else{
-                    throw new EntityAlreadyExistException("Email");
+                user.setEmail(userRequestDto.getEmail());
 
-                }
                 user.setEmail(userRequestDto.getEmail());
                 user.setName(userRequestDto.getName());
                 user.setRole(User.Role.valueOf(userRequestDto.getRole()));
-               // if (userRequestDto.getFaculty()) {
-                //     user.setFaculty(null);
-                // } else 
-                if(userRequestDto.getFaculty() != 0) {
+                // if (userRequestDto.getFaculty()) {
+                // user.setFaculty(null);
+                // } else
+                if (userRequestDto.getFaculty() != 0) {
                     user.setFaculty(facultyService.getFacultyById(userRequestDto.getFaculty()));
                 }
                 User updatedUser = usersRepo.save(user);
@@ -143,9 +140,9 @@ public class UserService {
                     user.setProfilePhotoName(fileName);
                     user.setProfilePhotoType(userRequestDto.getProfilePhoto().getContentType());
                 }
-                if(usersRepo.findByEmailAndDeleteStatus(userRequestDto.getEmail(), false)==null){
+                if (usersRepo.findByEmailAndDeleteStatus(userRequestDto.getEmail(), false) == null) {
                     user.setEmail(userRequestDto.getEmail());
-                }else{
+                } else {
                     throw new EntityAlreadyExistException("Email");
                 }
                 user.setName(userRequestDto.getName());
