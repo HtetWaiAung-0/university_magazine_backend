@@ -30,7 +30,7 @@ public class ArticleController {
     public ResponseEntity<?> getAllArticles() {
         return ResponseEntity.ok().body(articleService.getAllArticles());
     }
-
+   
     @GetMapping("/{articleId}")
     public ResponseEntity<?> getArticle(@PathVariable int articleId) {
         return ResponseEntity.status(HttpStatus.OK).body(articleService.getArticle(articleId));
@@ -44,6 +44,11 @@ public class ArticleController {
     @GetMapping("/byUser/{userId}")
     public ResponseEntity<?> getArticlesByUserId(@PathVariable int userId){
         return ResponseEntity.ok().body(articleService.getArticlesByUserId(userId));
+    }
+
+    @GetMapping("/ByStatus/{status}")
+    public ResponseEntity<?> getArticlesByStatus(@PathVariable String status){
+        return ResponseEntity.ok().body(articleService.getArticlesByStatus(status));
     }
 
     @PostMapping("/add")

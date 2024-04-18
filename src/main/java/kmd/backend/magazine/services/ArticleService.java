@@ -145,6 +145,27 @@ public class ArticleService {
         }
     }
 
+    public List<ArticelResponseDto> getArticlesByStatus(String status) {
+        List<Article> articles = articlesRepo.findByStatus(status);
+
+        List<ArticelResponseDto> articleResponseDtos = new ArrayList<>();
+
+            for (Article article : articles) {
+                String fileDownloadURL = commonService.fileDownloadURL("api/v1/article/file", article.getFileData(),
+                        article.getFileName(), article.getId());
+                String coverPhotoDownloadURL = commonService.fileDownloadURL("api/v1/article/coverPhoto",
+                        article.getCoverPhotoData(),
+                        article.getCoverPhotoName(), article.getId());
+                UserResponseDto userResponseDto = userService.getUser(article.getUser().getId());
+                articleResponseDtos
+                        .add(new ArticelResponseDto(article.getId(), article.getTitle(), fileDownloadURL,
+                                coverPhotoDownloadURL,
+                                article.getApproveStatusAsString(), article.isDeleteStatus(), article.getCreatedDate(),
+                                article.getUpdatedDate(), article.getAcademicYear(), userResponseDto));
+            }
+            return articleResponseDtos;
+    }
+
     public Article saveArticle(ArticelRequestDto articelRequestDto) throws Exception {
         Article article = new Article();
 
@@ -184,6 +205,8 @@ public class ArticleService {
             throw new Exception(e.getMessage());
         }
     }
+
+    
 
     public Article updateArticle(ArticelRequestDto articelRequestDto, int articelId) throws Exception {
 
