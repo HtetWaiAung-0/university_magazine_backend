@@ -56,7 +56,8 @@ public class ArticleService {
     public List<ArticelResponseDto> getAllArticles() {
         List<ArticelResponseDto> articelResponseDtos = new ArrayList<>();
         for (Article article : articlesRepo.findByDeleteStatus(false)) {
-            String fileDownloadURL = commonService.fileDownloadURL("api/v1/article/file", article.getFileData(),
+            if(article.getApproveStatus()==Article.ApproveStatus.APPROVED) {
+                String fileDownloadURL = commonService.fileDownloadURL("api/v1/article/file", article.getFileData(),
                     article.getFileName(), article.getId());
             String coverPhotoDownloadURL = commonService.fileDownloadURL("api/v1/article/coverPhoto",
                     article.getCoverPhotoData(),
@@ -68,6 +69,8 @@ public class ArticleService {
                             coverPhotoDownloadURL,
                             article.getApproveStatusAsString(), article.isDeleteStatus(), article.getCreatedDate(),
                             article.getUpdatedDate(), article.getAcademicYear(), userResponseDto));
+            }
+            
         }
         return articelResponseDtos;
     }
@@ -76,6 +79,27 @@ public class ArticleService {
 
         List<Article> articles = articlesRepo.findArticleByFacultyId(faultyId);
 
+        List<ArticelResponseDto> articleResponseDtos = new ArrayList<>();
+        for (Article article : articles) {
+            String fileDownloadURL = commonService.fileDownloadURL("api/v1/article/file", article.getFileData(),
+                    article.getFileName(), article.getId());
+            String coverPhotoDownloadURL = commonService.fileDownloadURL("api/v1/article/coverPhoto",
+                    article.getCoverPhotoData(),
+                    article.getCoverPhotoName(), article.getId());
+
+            UserResponseDto userResponseDto = userService.getUser(article.getUser().getId());
+            articleResponseDtos
+                    .add(new ArticelResponseDto(article.getId(), article.getTitle(), fileDownloadURL,
+                            coverPhotoDownloadURL,
+                            article.getApproveStatusAsString(), article.isDeleteStatus(), article.getCreatedDate(),
+                            article.getUpdatedDate(), article.getAcademicYear(), userResponseDto));
+        }
+        return articleResponseDtos;
+
+    }
+
+    public List<ArticelResponseDto> getArticlesByUserId(int userId){
+        List<Article> articles = articlesRepo.findByUserId(userId);
         List<ArticelResponseDto> articleResponseDtos = new ArrayList<>();
         for (Article article : articles) {
             String fileDownloadURL = commonService.fileDownloadURL("api/v1/article/file", article.getFileData(),

@@ -21,9 +21,8 @@ public interface ArticleRepo extends JpaRepository<Article, Integer> {
                 "where a.delete_status = false and f.delete_status = false and f.id = :facultyId", nativeQuery = true)
     List<Article> findArticleByFacultyId(@Param("facultyId") int facultyId);
 
-    
-
-    
+    @Query(value = "select * from article where user_id = :userId and delete_status = false", nativeQuery = true)
+    List<Article> findByUserId(@Param("userId") int userId);
 
     List<Article> findArticleByApproveStatus(Article.ApproveStatus status);
 
