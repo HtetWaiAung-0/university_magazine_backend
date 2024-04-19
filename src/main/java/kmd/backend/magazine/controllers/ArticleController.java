@@ -1,5 +1,6 @@
 package kmd.backend.magazine.controllers;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -30,7 +31,7 @@ public class ArticleController {
     public ResponseEntity<?> getAllArticles() {
         return ResponseEntity.ok().body(articleService.getAllArticles());
     }
-   
+
     @GetMapping("/{articleId}")
     public ResponseEntity<?> getArticle(@PathVariable int articleId) {
         return ResponseEntity.status(HttpStatus.OK).body(articleService.getArticle(articleId));
@@ -42,12 +43,12 @@ public class ArticleController {
     }
 
     @GetMapping("/byUser/{userId}")
-    public ResponseEntity<?> getArticlesByUserId(@PathVariable int userId){
+    public ResponseEntity<?> getArticlesByUserId(@PathVariable int userId) {
         return ResponseEntity.ok().body(articleService.getArticlesByUserId(userId));
     }
 
     @GetMapping("/ByStatus/{status}")
-    public ResponseEntity<?> getArticlesByStatus(@PathVariable String status){
+    public ResponseEntity<?> getArticlesByStatus(@PathVariable String status) {
         return ResponseEntity.ok().body(articleService.getArticlesByStatus(status));
     }
 
@@ -107,5 +108,11 @@ public class ArticleController {
     @GetMapping("/search")
     public ResponseEntity<?> getArticleByName(@RequestParam(name = "name") String name) {
         return ResponseEntity.status(HttpStatus.OK).body(articleService.getArticleByName(name));
+    }
+
+    @GetMapping("/ByAcademicYear")
+    public ResponseEntity<?> getArticlesByAcademicYear(@RequestParam(name = "academicYear") int academicYear,
+            @RequestParam(name = "faculty") int facultyId) {
+        return ResponseEntity.status(HttpStatus.OK).body(articleService.getArticlesByAcademicYear(academicYear,facultyId));
     }
 }
