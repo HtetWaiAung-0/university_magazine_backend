@@ -86,7 +86,7 @@ public class GuestRequestService {
     public void rejectGuestRequest(int guestRequestId) throws Exception {
         try {
             GuestRequest guestRequest = guestRequestRepo.findById(guestRequestId).get();
-            guestRequest.setStatus(GuestRequest.Status.valueOf("REJECTED"));
+            guestRequest.setStatus(GuestRequest.Status.valueOf("REJECT"));
             guestRequestRepo.save(guestRequest);
         } catch (Exception e) {
             e.printStackTrace();

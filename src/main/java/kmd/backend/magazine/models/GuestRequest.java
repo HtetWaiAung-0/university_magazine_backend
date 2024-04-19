@@ -19,7 +19,7 @@ import jakarta.persistence.Table;
 public class GuestRequest extends BaseEntity{
 
     public enum Status {
-        PENDING, ACTIVE, REJECTED, EXPRIRED
+        PENDING, ACTIVE, REJECT, EXPRIRED
     }
 
     @Column(name = "email", length = 255, nullable = true)
