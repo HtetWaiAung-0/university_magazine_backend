@@ -42,9 +42,9 @@ public class ArticleController {
         return ResponseEntity.status(HttpStatus.OK).body(articleService.getArticlesByFacultyId(facultyId));
     }
 
-    @GetMapping("/byUser/{userId}")
-    public ResponseEntity<?> getArticlesByUserId(@PathVariable int userId) {
-        return ResponseEntity.ok().body(articleService.getArticlesByUserId(userId));
+    @GetMapping("/byUser/")
+    public ResponseEntity<?> getArticlesByUserId(@RequestParam("userId") int userId,@RequestParam("academicYearId") int academicYearId) {
+        return ResponseEntity.ok().body(articleService.getArticlesByUserId(userId,academicYearId));
     }
 
     @GetMapping("/ByStatus/{status}")

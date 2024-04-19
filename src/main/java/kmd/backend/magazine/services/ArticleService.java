@@ -102,8 +102,8 @@ public class ArticleService {
 
     }
 
-    public List<ArticelResponseDto> getArticlesByUserId(int userId) {
-        List<Article> articles = articlesRepo.findByUserId(userId);
+    public List<ArticelResponseDto> getArticlesByUserId(int userId,int academicYearId) {
+        List<Article> articles = articlesRepo.findByUserId(userId,academicYearId);
         List<ArticelResponseDto> articleResponseDtos = new ArrayList<>();
         for (Article article : articles) {
             String fileDownloadURL = commonService.fileDownloadURL("api/v1/article/file", article.getFileData(),
@@ -153,6 +153,7 @@ public class ArticleService {
         List<ArticelResponseDto> articleResponseDtos = new ArrayList<>();
 
         for (Article article : articles) {
+            if (article.getApproveStatus() == Article.ApproveStatus.APPROVED) {
             String fileDownloadURL = commonService.fileDownloadURL("api/v1/article/file", article.getFileData(),
                     article.getFileName(), article.getId());
             String coverPhotoDownloadURL = commonService.fileDownloadURL("api/v1/article/coverPhoto",
@@ -165,6 +166,7 @@ public class ArticleService {
                             article.getApproveStatusAsString(), article.isDeleteStatus(), article.getCreatedDate(),
                             article.getUpdatedDate(), article.getAcademicYear(), userResponseDto));
         }
+    }
         return articleResponseDtos;
     }
 
