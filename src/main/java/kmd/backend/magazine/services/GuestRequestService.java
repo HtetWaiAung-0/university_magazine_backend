@@ -33,6 +33,9 @@ public class GuestRequestService {
         }
 
         try {
+            if(guestRequest.getFacultyId()==0){
+                throw new Exception("Faculty does not exist!");
+            }
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
             guestRequest.setStatusDate(LocalDate.now().format(formatter));
             System.out.println("testing");
