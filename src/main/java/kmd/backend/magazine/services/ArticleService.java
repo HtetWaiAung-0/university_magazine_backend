@@ -170,8 +170,8 @@ public class ArticleService {
         return articleResponseDtos;
     }
 
-    public List<ArticelResponseDto> getArticlesByStatus(String status) {
-        List<Article> articles = articlesRepo.findByStatus(status);
+    public List<ArticelResponseDto> getArticlesByStatus(int academicYearId, int facultyId, String status) {
+        List<Article> articles = articlesRepo.findByStatus(academicYearId,facultyId,status);
 
         List<ArticelResponseDto> articleResponseDtos = new ArrayList<>();
 

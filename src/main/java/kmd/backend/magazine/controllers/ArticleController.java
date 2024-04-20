@@ -43,13 +43,15 @@ public class ArticleController {
     }
 
     @GetMapping("/byUser")
-    public ResponseEntity<?> getArticlesByUserId(@RequestParam("userId") int userId,@RequestParam("academicYearId") int academicYearId) {
-        return ResponseEntity.ok().body(articleService.getArticlesByUserId(userId,academicYearId));
+    public ResponseEntity<?> getArticlesByUserId(@RequestParam("userId") int userId,
+            @RequestParam("academicYearId") int academicYearId) {
+        return ResponseEntity.ok().body(articleService.getArticlesByUserId(userId, academicYearId));
     }
 
-    @GetMapping("/ByStatus/{status}")
-    public ResponseEntity<?> getArticlesByStatus(@PathVariable String status) {
-        return ResponseEntity.ok().body(articleService.getArticlesByStatus(status));
+    @GetMapping("/byStatus")
+    public ResponseEntity<?> getArticlesByStatus(@RequestParam("academicYearId") int academicYearId,
+            @RequestParam("facultyId") int facultyId, @RequestParam("status") String status) {
+        return ResponseEntity.ok().body(articleService.getArticlesByStatus(academicYearId, facultyId, status));
     }
 
     @PostMapping("/add")
@@ -113,6 +115,7 @@ public class ArticleController {
     @GetMapping("/ByAcademicYear")
     public ResponseEntity<?> getArticlesByAcademicYear(@RequestParam(name = "academicYear") int academicYear,
             @RequestParam(name = "faculty") int facultyId) {
-        return ResponseEntity.status(HttpStatus.OK).body(articleService.getArticlesByAcademicYear(academicYear,facultyId));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(articleService.getArticlesByAcademicYear(academicYear, facultyId));
     }
 }
