@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.EntityNotFoundException;
 import kmd.backend.magazine.dtos.UserRequestDto;
 import kmd.backend.magazine.models.GuestRequest;
 import kmd.backend.magazine.models.User;
@@ -34,13 +35,15 @@ public class GuestRequestService {
 
         try {
             if(guestRequest.getFacultyId()==0){
-                throw new Exception("Faculty does not exist!");
+                throw new EntityNotFoundException("Faculty does not exist!");
             }
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
             guestRequest.setStatusDate(LocalDate.now().format(formatter));
-            System.out.println("testing");
             return guestRequestRepo.save(guestRequest);
-        } catch (Exception e) {
+        } catch(EntityNotFoundException e) {
+            e.printStackTrace();
+            throw new Exception("Faculty does not exist!");
+        }catch (Exception e) {
             e.printStackTrace();
             throw new Exception("Guest Register Fail!");
         }

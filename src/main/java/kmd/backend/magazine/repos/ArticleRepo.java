@@ -31,7 +31,7 @@ public interface ArticleRepo extends JpaRepository<Article, Integer> {
     @Query(value = "select a.* from article a\r\n" + //
             "inner join users u on a.user_id = u.id\r\n" + //
             "inner join faculty f on u.faculty_id = f.id\r\n" + //
-            "where a.delete_status = false and f.delete_status = false and a.academic_year_id = :academicYearId f.id = :facultyId and a.approve_status = :status", nativeQuery = true)
+            "where a.delete_status = false and f.delete_status = false and a.academic_year_id = :academicYearId and f.id = :facultyId and a.approve_status = :status", nativeQuery = true)
     List<Article> findByStatus(@Param("academicYearId") int academicYearId,@Param("facultyId") int facultyId,@Param("status") String status);
 
     @Query(value = "select a.* from article a inner join users u on a.user_id = u.id where a.academic_year_id = :academicYearId  and u.faculty_id = :facultyId and a.delete_status = false", nativeQuery = true)
