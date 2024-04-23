@@ -14,7 +14,6 @@ public interface FacultyRepo extends JpaRepository<Faculty, Integer> {
             "inner join users u on f.id = u.faculty_id where u.id = :userId", nativeQuery = true)
     List<Faculty> findFacultyByUserId(@Param("userId") int userId);
 
-    @Query(value = "select * from faculty order by id where delete_status = false", nativeQuery = true)
+    @Query(value = "select * from faculty where delete_status = false order by id", nativeQuery = true)
     List<Faculty> findAllFaculties();
-
 }
