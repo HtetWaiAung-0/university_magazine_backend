@@ -8,10 +8,11 @@ import org.springframework.data.repository.query.Param;
 import kmd.backend.magazine.models.Faculty;
 
 public interface FacultyRepo extends JpaRepository<Faculty, Integer> {
+    @Query(value = "select * from faculty where delete_status = false and name = :facultyName order by id", nativeQuery = true)
     List<Faculty> findByName(String facultyName);
 
     @Query(value = "select f.* from faculty f\n" + //
-            "inner join users u on f.id = u.faculty_id where u.id = :userId", nativeQuery = true)
+            "inner join users u on f.id = u.faculty_id where u.id = :userId order by id", nativeQuery = true)
     List<Faculty> findFacultyByUserId(@Param("userId") int userId);
 
     @Query(value = "select * from faculty where delete_status = false order by id", nativeQuery = true)
